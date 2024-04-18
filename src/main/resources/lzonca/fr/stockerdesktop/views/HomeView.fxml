@@ -8,7 +8,10 @@
 
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="lzonca.fr.stockerdesktop.GroupsView"
+            fx:controller="lzonca.fr.stockerdesktop.HomeView"
             prefHeight="400.0" prefWidth="600.0">
-
+    <children>
+        <Label layoutX="20.0" layoutY="20.0" text="Home View" />
+        <!-- Add your other UI elements here -->
+    </children>
 </AnchorPane>

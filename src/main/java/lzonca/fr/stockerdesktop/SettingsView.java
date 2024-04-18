@@ -2,7 +2,7 @@ package lzonca.fr.stockerdesktop;
 
 import javafx.fxml.FXML;
 
-public class GroupsView {
+public class SettingsView {
 
     @FXML
     public void initialize() {

@@ -3,6 +3,9 @@ package lzonca.fr.stockerdesktop;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.SubScene;
+import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 
@@ -12,39 +15,63 @@ import java.util.Objects;
 public class MainView {
 
 
+    @FXML
+    private Button goToHome;
+
+    @FXML
+    private Button goToStocks;
+
+    @FXML
+    private Button goToGroups;
+
+    @FXML
+    private Button goToSettings;
+
+    @FXML
+    private SubScene subScene;
+
+    @FXML
     public void initialize() {
-        sideBar.toFront();
+        goToHome();
     }
 
     @FXML
-    private VBox sideBar;
-
-    @FXML
-    private AnchorPane contentArea;
-
-
-    @FXML
-
-    private void toHomeButton() throws IOException {
-        Node node = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/lzonca/fr/stockerdesktop/HomeView.fxml")));
-        contentArea.getChildren().setAll(node);
+    private void goToHome() {
+        try {
+            Parent stockView = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/lzonca/fr/stockerdesktop/views/HomeView.fxml")));
+            subScene.setRoot(stockView);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
-    private void toStocksButton() throws IOException {
-        Node node = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/lzonca/fr/stockerdesktop/StocksView.fxml")));
-        contentArea.getChildren().setAll(node);
+    private void goToStocks() {
+        try {
+            Parent stockView = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/lzonca/fr/stockerdesktop/views/StocksView.fxml")));
+            subScene.setRoot(stockView);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
-    private void toGroupsButton() throws IOException {
-        Node node = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/lzonca/fr/stockerdesktop/GroupsView.fxml")));
-        contentArea.getChildren().setAll(node);
+    private void goToGroups() {
+        try {
+            Parent groupsView = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/lzonca/fr/stockerdesktop/views/GroupsView.fxml")));
+            subScene.setRoot(groupsView);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
-    private void toSettingsButton() throws IOException {
-        Node node = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/lzonca/fr/stockerdesktop/SettingsView.fxml")));
-        contentArea.getChildren().setAll(node);
+    private void goToSettings() {
+        try {
+            Parent settingsView = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/lzonca/fr/stockerdesktop/views/SettingsView.fxml")));
+            subScene.setRoot(settingsView);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
