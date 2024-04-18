@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="660.0" prefWidth="1001.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="lzonca.fr.stockerdesktop.MainView">
+<AnchorPane prefHeight="660.0" prefWidth="1001.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="lzonca.fr.stockerdesktop.views.MainView">
    <BorderPane layoutY="-2.0" prefHeight="658.0" prefWidth="1001.0" AnchorPane.bottomAnchor="-32.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-2.0">
       <top>
          <HBox alignment="CENTER_LEFT" prefHeight="67.0" prefWidth="1001.0" spacing="20.0" style="-fx-background-color: #92aa83;" stylesheets="@css/styles.css" BorderPane.alignment="CENTER">

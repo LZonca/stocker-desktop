@@ -2,7 +2,6 @@ module lzonca.fr.stockerdesktop {
     requires javafx.controls;
     requires javafx.fxml;
     requires javafx.web;
-
     requires org.controlsfx.controls;
     requires com.dlsc.formsfx;
     requires net.synedra.validatorfx;
@@ -10,9 +9,17 @@ module lzonca.fr.stockerdesktop {
     requires org.kordamp.bootstrapfx.core;
     requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
+    requires java.prefs;
+    requires java.net.http;
+    requires com.fasterxml.jackson.databind;
 
     opens lzonca.fr.stockerdesktop to javafx.fxml;
     exports lzonca.fr.stockerdesktop;
-    /*exports lzonca.fr.stockerdesktop.components;
-    opens lzonca.fr.stockerdesktop.components to javafx.fxml;*/
+    exports lzonca.fr.stockerdesktop.views;
+    opens lzonca.fr.stockerdesktop.views to javafx.fxml;
+    exports lzonca.fr.stockerdesktop.system;
+    opens lzonca.fr.stockerdesktop.system to javafx.fxml;
+    exports lzonca.fr.stockerdesktop.responses to com.fasterxml.jackson.databind;
+    opens lzonca.fr.stockerdesktop.responses to com.fasterxml.jackson.databind;
+    exports lzonca.fr.stockerdesktop.models to com.fasterxml.jackson.databind;
 }

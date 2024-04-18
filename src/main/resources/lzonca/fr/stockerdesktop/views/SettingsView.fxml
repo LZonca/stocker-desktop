@@ -1,11 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="600.0" prefWidth="828.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="lzonca.fr.stockerdesktop.SettingsView">
+<AnchorPane prefHeight="600.0" prefWidth="828.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="lzonca.fr.stockerdesktop.views.SettingsView">
     <children>
-        <Label layoutX="20.0" layoutY="20.0" text="Settings View" />
-        <!-- Add your other UI elements here -->
+      <VBox alignment="TOP_CENTER" layoutX="-1.0" layoutY="-1.0" prefHeight="600.0" prefWidth="828.0" spacing="20.0" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="-1.0">
+         <children>
+              <Label text="Paramètres">
+               <font>
+                  <Font size="30.0" />
+               </font>
+            </Label>
+            <Label text="Votre email actuel:" />
+            <TextField fx:id="emailField" />
+            <Button mnemonicParsing="false" prefHeight="33.0" prefWidth="167.0" style="-fx-background-color: #B0BEA9;" text="Changer l'email" />
+            <Label text="Mot de passe actuel:" />
+            <PasswordField fx:id="passwordField"/>
+            <Label text="Confirmez le mot de passe" />
+            <PasswordField fx:id="passwordConfirmationField" />
+            <Button mnemonicParsing="false" prefHeight="37.0" prefWidth="178.0" style="-fx-background-color: #B0BEA9;" text="Changer le mot de passe" />
+              <Button fx:id="logoutButton" mnemonicParsing="false" onAction="#logout" prefHeight="30.0" prefWidth="198.0" style="-fx-background-color: #92AA83; -fx-border-radius: 50;" text="Se déconnecter">
+                  <font>
+                      <Font size="20.0" />
+                  </font>
+              </Button>
+         </children>
+         <padding>
+            <Insets left="250.0" right="250.0" top="30.0" />
+         </padding>
+      </VBox>
     </children>
 </AnchorPane>

@@ -1,8 +1,8 @@
-package lzonca.fr.stockerdesktop;
+package lzonca.fr.stockerdesktop.views;
 
 import javafx.fxml.FXML;
 
-public class SettingsView {
+public class GroupsView {
 
     @FXML
     public void initialize() {

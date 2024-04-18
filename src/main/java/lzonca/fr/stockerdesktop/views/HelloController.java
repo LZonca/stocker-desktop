@@ -1,4 +1,4 @@
-package lzonca.fr.stockerdesktop;
+package lzonca.fr.stockerdesktop.views;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
