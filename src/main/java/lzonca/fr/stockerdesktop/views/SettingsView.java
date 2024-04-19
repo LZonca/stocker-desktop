@@ -5,11 +5,15 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import lzonca.fr.stockerdesktop.App;
+import lzonca.fr.stockerdesktop.models.User;
 import lzonca.fr.stockerdesktop.system.TokenManager;
 
 import java.io.IOException;
 
 public class SettingsView {
+
+    @FXML
+    private javafx.scene.control.Label currentMailField;
 
     @FXML
     private javafx.scene.control.TextField emailField;
@@ -23,9 +27,21 @@ public class SettingsView {
     @FXML
     private javafx.scene.control.Button logoutButton;
 
+    private User user;
+
     @FXML
     public void initialize() {
-        // Initialization logic here...
+        if (user != null) {
+            currentMailField.setText("Votre email actuel: " + user.getEmail());
+        }
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+        // Now you can use this.user in this class to access the user details
+        if (user != null) {
+            currentMailField.setText("Votre email actuel: " + user.getEmail());
+        }
     }
     @FXML
     private void logout(){

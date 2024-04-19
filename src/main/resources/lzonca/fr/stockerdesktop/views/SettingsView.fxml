@@ -18,7 +18,7 @@
                   <Font size="30.0" />
                </font>
             </Label>
-            <Label text="Votre email actuel:" />
+            <Label fx:id="currentMailField" text="Votre email actuel:" />
             <TextField fx:id="emailField" />
             <Button mnemonicParsing="false" prefHeight="33.0" prefWidth="167.0" style="-fx-background-color: #B0BEA9;" text="Changer l'email" />
             <Label text="Mot de passe actuel:" />

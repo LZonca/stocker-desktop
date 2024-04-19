@@ -92,7 +92,10 @@ public class MainView {
     @FXML
     private void goToSettings() {
         try {
-            Parent settingsView = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/lzonca/fr/stockerdesktop/views/SettingsView.fxml")));
+            FXMLLoader loader = new FXMLLoader(App.class.getResource("/lzonca/fr/stockerdesktop/views/SettingsView.fxml"));
+            Parent settingsView = loader.load();
+            SettingsView settingsViewController = loader.getController();
+            settingsViewController.setUser(this.user); // Pass the user details to the HomeView
             subScene.setRoot(settingsView);
         } catch (IOException e) {
             e.printStackTrace();
