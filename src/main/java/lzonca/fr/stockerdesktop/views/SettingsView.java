@@ -31,15 +31,15 @@ public class SettingsView {
 
     @FXML
     public void initialize() {
-        if (user != null) {
-            currentMailField.setText("Votre email actuel: " + user.getEmail());
+
+        if (this.user != null) {
+            currentMailField.setText("Votre email actuel: " + this.user.getEmail());
         }
     }
 
     public void setUser(User user) {
         this.user = user;
-        // Now you can use this.user in this class to access the user details
-        if (user != null) {
+        if (user != null && currentMailField != null) {
             currentMailField.setText("Votre email actuel: " + user.getEmail());
         }
     }

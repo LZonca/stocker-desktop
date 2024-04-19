@@ -22,7 +22,7 @@
             <TextField fx:id="emailField" />
             <Button mnemonicParsing="false" prefHeight="33.0" prefWidth="167.0" style="-fx-background-color: #B0BEA9;" text="Changer l'email" />
             <Label text="Mot de passe actuel:" />
-            <PasswordField fx:id="passwordField"/>
+            <PasswordField fx:id="passwordField" />
             <Label text="Confirmez le mot de passe" />
             <PasswordField fx:id="passwordConfirmationField" />
             <Button mnemonicParsing="false" prefHeight="37.0" prefWidth="178.0" style="-fx-background-color: #B0BEA9;" text="Changer le mot de passe" />

@@ -18,7 +18,6 @@ public class HomeView {
 
     public void setUser(User user) {
         this.user = user;
-        // Now you can use this.user in this class to access the user details
         if (user != null) {
             userNameLabel.setText(user.getName());
         }
