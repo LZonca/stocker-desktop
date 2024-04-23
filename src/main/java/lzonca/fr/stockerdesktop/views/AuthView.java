@@ -7,6 +7,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import lzonca.fr.stockerdesktop.App;
+import lzonca.fr.stockerdesktop.models.User;
 import lzonca.fr.stockerdesktop.responses.UserResponse;
 import lzonca.fr.stockerdesktop.system.HttpManager;
 import lzonca.fr.stockerdesktop.system.TokenManager;
@@ -32,6 +33,7 @@ public class AuthView {
     private Button loginButton;
 
     private UserResponse userResponse;
+    private User user;
 
     @FXML
     public void initialize() {
@@ -105,6 +107,10 @@ public class AuthView {
 
             // Get the token from the UserResponse object
             String token = userResponse.getToken();
+
+            // Get the user from the UserResponse object and store it in the user field
+            this.user = userResponse.getUser();
+
             return token;
 
         } catch (URISyntaxException | IOException e) {

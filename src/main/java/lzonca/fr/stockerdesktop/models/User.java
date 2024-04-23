@@ -1,25 +1,28 @@
 package lzonca.fr.stockerdesktop.models;
 
+import java.util.List;
+
 public class User {
-    private String id;
-    private String email;
+    private int id;
     private String name;
-    private String token;
+    private String email;
+    private List<Stock> stocks;
+    private List<Group> groupes;
 
     public User() {
     }
 
-    public User(String id, String email, String name) {
+    public User(int id, String email, String name) {
         this.id = id;
         this.email = email;
         this.name = name;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 

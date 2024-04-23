@@ -12,14 +12,14 @@ public class HomeView {
 
     public void initialize() {
         if (user != null) {
-            userNameLabel.setText(user.getName());
+            userNameLabel.setText(user.getName().toUpperCase());
         }
     }
 
     public void setUser(User user) {
         this.user = user;
         if (user != null) {
-            userNameLabel.setText(user.getName());
+            userNameLabel.setText(user.getName().toUpperCase());
         }
     }
 }

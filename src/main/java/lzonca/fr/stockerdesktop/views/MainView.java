@@ -72,7 +72,10 @@ public class MainView {
     @FXML
     private void goToStocks() {
         try {
-            Parent stockView = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/lzonca/fr/stockerdesktop/views/StocksView.fxml")));
+            FXMLLoader loader = new FXMLLoader(App.class.getResource("/lzonca/fr/stockerdesktop/views/StocksView.fxml"));
+            Parent stockView = loader.load();
+            StocksView stocksViewController = loader.getController();
+            stocksViewController.setUser(this.user); // Pass the user details to the HomeView
             subScene.setRoot(stockView);
         } catch (IOException e) {
             e.printStackTrace();

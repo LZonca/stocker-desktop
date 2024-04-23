@@ -15,22 +15,28 @@ public class HttpManager {
     /*private final String baseUrl = "http://localhost:8000/api";*/
     private final String token = TokenManager.getToken();
 
-    public HttpResponse<String> getUser() throws URISyntaxException {
-        System.out.println("Token: " + TokenManager.getToken());
+    private final HttpClient client;
+
+    public HttpManager() {
+        client = HttpClient.newHttpClient();
+    }
+    public HttpResponse<String> getUser() throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(new URI(baseUrl + "/user"))
-                .timeout(Duration.ofMinutes(1))
-                .header("Content-Type", "application/json")
-                .header("Authorization", "Bearer " + token)
-                .GET()
+                .uri(URI.create(baseUrl + "/user"))
+                .header("Authorization", "Bearer " + TokenManager.getToken())
                 .build();
 
-        try (HttpClient client = HttpClient.newHttpClient()) {
-            return client.send(request, HttpResponse.BodyHandlers.ofString());
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        System.out.println("Status code: " + response.statusCode());
+        System.out.println("Headers: " + response.headers());
+
+        if (response.statusCode() == 401) {
+            TokenManager.removeToken();
+            throw new IOException("Token is expired or invalid");
         }
-        return null;
+
+        return response;
     }
 
     public HttpResponse<String> get(String url) throws URISyntaxException, IOException, InterruptedException {

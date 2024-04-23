@@ -22,20 +22,35 @@ import java.util.Objects;
 
 public class App extends Application {
     double x, y;
+    Image logo;
     @Override
     public void start(Stage stage) throws IOException, URISyntaxException {
+        System.setProperty("javafx.platform", "desktop");
         FXMLLoader fxmlLoader;
         Scene scene;
         if (TokenManager.hasToken()) {
             fxmlLoader = new FXMLLoader(App.class.getResource("MainView.fxml"));
             HttpManager httpManager = new HttpManager();
-            HttpResponse<String> userResponse = httpManager.getUser();
+            HttpResponse<String> userResponse = null;
+            try {
+                userResponse = httpManager.getUser();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             scene = new Scene(fxmlLoader.load());
             MainView mainViewController = fxmlLoader.getController();
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-            User user = mapper.readValue(userResponse.body(), User.class);
-            mainViewController.setUser(user);
+            User user = null;
+            assert userResponse != null;
+            if (userResponse.body().startsWith("{")) {
+                user = mapper.readValue(userResponse.body(), User.class);
+                mainViewController.setUser(user);
+            } else {
+                System.out.println("Unexpected response format: " + userResponse.body());
+                fxmlLoader = new FXMLLoader(App.class.getResource("AuthView.fxml"));
+                scene = new Scene(fxmlLoader.load());
+            }
         } else {
             fxmlLoader = new FXMLLoader(App.class.getResource("AuthView.fxml"));
             scene = new Scene(fxmlLoader.load());
@@ -54,7 +69,8 @@ public class App extends Application {
         scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("css/styles.css")).toExternalForm());
         stage.setTitle("Stocker Desktop");
 
-        stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResource("/lzonca/fr/stockerdesktop/assets/stocker.png")).toExternalForm()));
+        logo = new Image(Objects.requireNonNull(getClass().getResource("/lzonca/fr/stockerdesktop/assets/stocker.png")).toExternalForm());
+        stage.getIcons().add(logo);
         stage.setScene(scene);
         stage.show();
     }

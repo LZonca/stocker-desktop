@@ -20,13 +20,13 @@
             </Label>
             <Label fx:id="currentMailField" text="Votre email actuel:" />
             <TextField fx:id="emailField" />
-            <Button mnemonicParsing="false" prefHeight="33.0" prefWidth="167.0" style="-fx-background-color: #B0BEA9;" text="Changer l'email" />
+            <Button mnemonicParsing="false" prefHeight="33.0" prefWidth="167.0" styleClass="default-button" text="Changer l'email" />
             <Label text="Mot de passe actuel:" />
             <PasswordField fx:id="passwordField" />
             <Label text="Confirmez le mot de passe" />
             <PasswordField fx:id="passwordConfirmationField" />
-            <Button mnemonicParsing="false" prefHeight="37.0" prefWidth="178.0" style="-fx-background-color: #B0BEA9;" text="Changer le mot de passe" />
-              <Button fx:id="logoutButton" mnemonicParsing="false" onAction="#logout" prefHeight="30.0" prefWidth="198.0" style="-fx-background-color: #92AA83; -fx-border-radius: 50;" text="Se déconnecter">
+            <Button mnemonicParsing="false" prefHeight="37.0" prefWidth="178.0" styleClass="default-button" text="Changer le mot de passe" />
+              <Button fx:id="logoutButton" mnemonicParsing="false" onAction="#logout" prefHeight="30.0" prefWidth="198.0" styleClass="default-button" style="-fx-border-radius: 50;" text="Se déconnecter">
                   <font>
                       <Font size="20.0" />
                   </font>

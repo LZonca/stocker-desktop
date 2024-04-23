@@ -16,7 +16,7 @@
 <AnchorPane prefHeight="660.0" prefWidth="1001.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="lzonca.fr.stockerdesktop.views.MainView">
    <BorderPane layoutY="-2.0" prefHeight="658.0" prefWidth="1001.0" AnchorPane.bottomAnchor="-32.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-2.0">
       <top>
-         <HBox alignment="CENTER_LEFT" prefHeight="67.0" prefWidth="1001.0" spacing="20.0" style="-fx-background-color: #92aa83;" stylesheets="@css/styles.css" BorderPane.alignment="CENTER">
+         <HBox alignment="CENTER_LEFT" prefHeight="67.0" prefWidth="1001.0" spacing="20.0" style="-fx-background-color: #92AA83;" stylesheets="@css/styles.css" BorderPane.alignment="CENTER">
             <children>
                <ImageView fitHeight="36.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
                   <image>
@@ -42,9 +42,9 @@
             <children>
                <HBox AnchorPane.bottomAnchor="32.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                   <children>
-                     <VBox alignment="TOP_CENTER" prefHeight="595.0" prefWidth="173.0" spacing="25.0" style="-fx-background-color: #b0bea9;">
+                     <VBox alignment="TOP_CENTER" prefHeight="595.0" prefWidth="173.0" spacing="25.0" style="-fx-background-color: #B0BEA9;">
                         <children>
-                           <Button alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#goToHome" prefHeight="50.0" prefWidth="195.0" style="-fx-background-color: #92AA83;" text="Home" textAlignment="RIGHT">
+                           <Button alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#goToHome" prefHeight="50.0" prefWidth="195.0" styleClass="main-button" text="Home" textAlignment="RIGHT">
                               <font>
                                  <Font size="14.0" />
                               </font>
@@ -59,7 +59,7 @@
                                  <Insets left="30.0" />
                               </padding>
                            </Button>
-                           <Button alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#goToStocks" prefHeight="50.0" prefWidth="185.0" style="-fx-background-color: #92AA83;" text="Vos stocks" textAlignment="RIGHT">
+                           <Button alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#goToStocks" prefHeight="50.0" prefWidth="185.0" styleClass="main-button" text="Vos stocks" textAlignment="RIGHT">
                               <graphic>
                                  <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
                                     <image>
@@ -74,7 +74,7 @@
                                  <Insets left="30.0" />
                               </padding>
                            </Button>
-                           <Button alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#goToGroups" prefHeight="50.0" prefWidth="195.0" style="-fx-background-color: #92AA83;" text="Vos groupes" textAlignment="RIGHT">
+                           <Button alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#goToGroups" prefHeight="50.0" prefWidth="195.0" styleClass="main-button" text="Vos groupes" textAlignment="RIGHT">
                               <graphic>
                                  <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
                                     <image>
@@ -89,7 +89,7 @@
                                  <Insets left="30.0" />
                               </padding>
                            </Button>
-                           <Button alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#goToSettings" prefHeight="50.0" prefWidth="195.0" style="-fx-background-color: #92AA83;" text="Paramètres" textAlignment="RIGHT">
+                           <Button alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#goToSettings" prefHeight="50.0" prefWidth="195.0" styleClass="main-button" text="Paramètres" textAlignment="RIGHT">
                               <graphic>
                                  <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
                                     <image>

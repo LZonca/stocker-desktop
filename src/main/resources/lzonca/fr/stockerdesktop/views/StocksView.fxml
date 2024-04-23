@@ -1,11 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.AnchorPane?>
+<?import com.gluonhq.charm.glisten.control.CharmListView?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Accordion?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
 <AnchorPane prefHeight="600.0" prefWidth="828.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="lzonca.fr.stockerdesktop.views.StocksView">
     <children>
-        <Label layoutX="20.0" layoutY="20.0" text="Stock View" />
+      <VBox alignment="TOP_CENTER" layoutY="7.0" prefHeight="593.0" prefWidth="828.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="7.0">
+         <children>
+            <Label text="Vos stocks">
+               <font>
+                  <Font size="30.0" />
+               </font>
+            </Label>
+            <Accordion>
+              <panes>
+                <TitledPane animated="false" text="Vos stocks">
+                  <content>
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="652.0" prefWidth="826.0">
+                           <children>
+                              <CharmListView layoutX="-1.0" layoutY="-4.0" prefHeight="465.0" prefWidth="828.0" AnchorPane.bottomAnchor="-4.0" AnchorPane.leftAnchor="-11.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="-4.0" />
+                           </children>
+                        </AnchorPane>
+                  </content>
+                </TitledPane>
+                <TitledPane animated="false" text="Stocks de vos groupes">
+                  <content>
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="489.0" prefWidth="826.0">
+                           <children>
+                              <CharmListView prefHeight="465.0" prefWidth="828.0" />
+                           </children>
+                        </AnchorPane>
+                  </content>
+                </TitledPane>
+              </panes>
+            </Accordion>
+         </children>
+         <padding>
+            <Insets top="30.0" />
+         </padding>
+      </VBox>
         <!-- Add your other UI elements here -->
     </children>
 </AnchorPane>
