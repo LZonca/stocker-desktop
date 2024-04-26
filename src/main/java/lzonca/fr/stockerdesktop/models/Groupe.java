@@ -1,12 +1,15 @@
 package lzonca.fr.stockerdesktop.models;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class Group {
+public class Groupe {
     private int id;
     private String nom;
-    private int proprietaire_id;
+    private String image;
+    private User proprietaire; // Updated from int to User
     private List<Stock> stocks;
+    private List<User> members = new ArrayList<>();
 
     // getters and setters
     public int getId() {
@@ -25,12 +28,12 @@ public class Group {
         this.nom = nom;
     }
 
-    public int getProprietaire_id() {
-        return proprietaire_id;
+    public User getProprietaire() { // Updated return type to User
+        return proprietaire;
     }
 
-    public void setProprietaire_id(int proprietaire_id) {
-        this.proprietaire_id = proprietaire_id;
+    public void setProprietaire(User proprietaire) { // Updated parameter type to User
+        this.proprietaire = proprietaire;
     }
 
     public List<Stock> getStocks() {
@@ -39,5 +42,9 @@ public class Group {
 
     public void setStocks(List<Stock> stocks) {
         this.stocks = stocks;
+    }
+
+    public List<User> getMembers() {
+        return members;
     }
 }

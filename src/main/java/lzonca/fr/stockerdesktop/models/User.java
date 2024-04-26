@@ -7,7 +7,7 @@ public class User {
     private String name;
     private String email;
     private List<Stock> stocks;
-    private List<Group> groupes;
+    private List<Groupe> groupes;
 
     public User() {
     }
@@ -41,6 +41,15 @@ public class User {
     public void setName(String name) {
         this.name = name;
     }
+
+    public List<Groupe> getGroupes() {
+        return groupes;
+    }
+
+    public void setGroupes(List<Groupe> groupes) {
+            this.groupes = groupes;
+    }
+
     public String toString() {
         return "User{" +
                 "id='" + id + '\'' +

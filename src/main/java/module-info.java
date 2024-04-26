@@ -22,4 +22,5 @@ module lzonca.fr.stockerdesktop {
     exports lzonca.fr.stockerdesktop.responses to com.fasterxml.jackson.databind;
     opens lzonca.fr.stockerdesktop.responses to com.fasterxml.jackson.databind;
     exports lzonca.fr.stockerdesktop.models to com.fasterxml.jackson.databind;
+    opens lzonca.fr.stockerdesktop.models to com.fasterxml.jackson.databind, javafx.base;
 }

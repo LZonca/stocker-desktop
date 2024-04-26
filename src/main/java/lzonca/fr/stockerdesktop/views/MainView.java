@@ -85,7 +85,10 @@ public class MainView {
     @FXML
     private void goToGroups() {
         try {
-            Parent groupsView = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/lzonca/fr/stockerdesktop/views/GroupsView.fxml")));
+            FXMLLoader loader = new FXMLLoader(App.class.getResource("/lzonca/fr/stockerdesktop/views/GroupsView.fxml"));
+            Parent groupsView = loader.load();
+            GroupsView groupsViewController = loader.getController(); // Corrected line
+            groupsViewController.setUser(this.user);
             subScene.setRoot(groupsView);
         } catch (IOException e) {
             e.printStackTrace();

@@ -39,6 +39,34 @@ public class HttpManager {
         return response;
     }
 
+    public HttpResponse<String> addUserToGroup(int groupId, String email) throws IOException, InterruptedException, URISyntaxException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(new URI(baseUrl + "/groups/" + groupId + "/add"))
+                .header("Authorization", "Bearer " + token)
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString("{\"email\":\"" + email + "\"}"))
+                .timeout(Duration.of(5, SECONDS))
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 401) {
+            throw new IOException("Token is expired or invalid");
+        }
+
+        return response;
+    }
+
+    public HttpResponse<String> getUserGroups() throws IOException, InterruptedException, URISyntaxException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(new URI(baseUrl + "/user/groups"))
+                .header("Authorization", "Bearer " + token)
+                .GET()
+                .build();
+
+        return client.send(request, HttpResponse.BodyHandlers.ofString());
+    }
+
     public HttpResponse<String> get(String url) throws URISyntaxException, IOException, InterruptedException {
 
         HttpRequest request = HttpRequest.newBuilder()
