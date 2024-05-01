@@ -2,25 +2,29 @@ package lzonca.fr.stockerdesktop.views;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import lzonca.fr.stockerdesktop.App;
+import lzonca.fr.stockerdesktop.components.ErrorDialog;
 import lzonca.fr.stockerdesktop.models.User;
 import lzonca.fr.stockerdesktop.responses.UserResponse;
 import lzonca.fr.stockerdesktop.system.HttpManager;
 import lzonca.fr.stockerdesktop.system.LanguageManager;
 import lzonca.fr.stockerdesktop.system.TokenManager;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
+import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.http.HttpResponse;
 import java.util.Locale;
+import java.util.MissingResourceException;
+import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.prefs.Preferences;
 import java.util.regex.Matcher;
@@ -34,6 +38,12 @@ public class AuthView {
 
     @FXML
     public MenuItem englishMenuItem;
+    @FXML
+    public Text passwordLabel;
+    @FXML
+    public Text emailLabel;
+    @FXML
+    public Hyperlink noAccount;
 
     @FXML
     private TextField emailField;
@@ -52,38 +62,55 @@ public class AuthView {
 
     @FXML
     public void initialize() {
-        frenchMenuItem.setOnAction(event -> setLocale(Locale.of("fr", "FR")));
-        englishMenuItem.setOnAction(event -> setLocale(Locale.of("en", "US")));
+        frenchMenuItem.setOnAction(_ -> setLocale(Locale.of("fr", "FR")));
+        englishMenuItem.setOnAction(_ -> setLocale(Locale.of("en", "US")));
 
         loadResourceBundle();
+        updateText();
     }
 
+    private void updateText() {
+        // Update the text of your controls here
+        loginButton.setText(labels.getString("login"));
+        frenchMenuItem.setText(labels.getString("french"));
+        englishMenuItem.setText(labels.getString("english"));
+
+        noAccount.setText(labels.getString("noAccount"));
+        // Assuming "emailLabel", "passwordLabel", and "errorMessage" are the keys for the email label, password label, and error message respectively
+        // Replace these keys with the actual keys used in your resource bundle files
+        emailField.setPromptText(labels.getString("email"));
+        passwordField.setPromptText(labels.getString("password"));
+        emailLabel.setText(labels.getString("email"));
+        passwordLabel.setText(labels.getString("password"));
+    }
     private void loadResourceBundle() {
         String language = LanguageManager.getLanguage();
         Locale locale = language != null ? Locale.of(language) : Locale.getDefault();
-        labels = ResourceBundle.getBundle("lzonca.fr.stockerdesktop.auth", locale);
+        System.out.println("Loading resource bundle for locale: " + locale);
+        try {
+            labels = ResourceBundle.getBundle("lzonca.fr.stockerdesktop.lang.auth", locale);
+            System.out.println("Successfully loaded resource bundle");
+        } catch (MissingResourceException e) {
+            System.out.println("Failed to load resource bundle: " + e.getMessage());
+        }
     }
+
 
     private void setLocale(Locale locale) {
         LanguageManager.setLanguage(locale.getLanguage());
 
-        // Reload the resource bundle and the view
-        loadResourceBundle();
-        reloadView();
-    }
-
-    private void reloadView() {
-        // Get the current stage
+        // Close the current stage
         Stage currentStage = (Stage) loginButton.getScene().getWindow();
+        currentStage.close();
 
-        // Load the AuthView again
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("AuthView.fxml"), labels);
-        try {
-            Scene scene = new Scene(fxmlLoader.load());
-            currentStage.setScene(scene);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        // Create a new instance of the app and start it
+        Platform.runLater(() -> {
+            try {
+                new App().start(new Stage());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
 
 
@@ -99,13 +126,15 @@ public class AuthView {
 
         if (!matcher.matches()) {
             // Handle invalid email
-            System.out.println("Invalid email");
+            ErrorDialog errorDialog = new ErrorDialog(labels.getString("error"), labels.getString("invalidEmailTitle"), labels.getString("invalidEmailMessage"), FontAwesomeSolid.EXCLAMATION_TRIANGLE);
+            errorDialog.showAndWait();
             return;
         }
 
         if (password == null || password.isEmpty()) {
             // Handle null or empty password
-            System.out.println("Password cannot be null or empty");
+            ErrorDialog errorDialog = new ErrorDialog(labels.getString("error"), labels.getString("invalidPasswordTitle"), labels.getString("invalidPasswordMessage"), FontAwesomeSolid.EXCLAMATION_TRIANGLE);
+            errorDialog.showAndWait();
             return;
         }
 
@@ -123,14 +152,19 @@ public class AuthView {
                 MainView mainView = fxmlLoader.getController();
                 mainView.setUser(this.userResponse.getUser()); // Set the user object
                 Stage stage = new Stage();
+                stage.setTitle("Stocker Desktop");
+                Image logo = new Image(Objects.requireNonNull(getClass().getResource("/lzonca/fr/stockerdesktop/assets/stocker.png")).toExternalForm());
+                stage.getIcons().add(logo);
+                scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/lzonca/fr/stockerdesktop/css/styles.css")).toExternalForm());
+                stage.setScene(scene);
                 stage.setScene(scene);
                 stage.show();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         } else {
-            System.out.println("Login failed");
-            // Handle login failure
+            ErrorDialog errorDialog = new ErrorDialog(labels.getString("error"), labels.getString("loginFailedTitle"), labels.getString("loginFailedMessage"), FontAwesomeSolid.EXCLAMATION_CIRCLE);
+            errorDialog.showAndWait();
         }
     }
 
@@ -141,14 +175,15 @@ public class AuthView {
         try {
             response = httpManager.post("/login", json);
             System.out.println(response.statusCode());
+            ObjectMapper mapper = new ObjectMapper();
             if (response.statusCode() == 302) {
-                // Handle invalid credentials
-                System.out.println("Invalid credentials");
-                return null;
+                System.out.println(response.body());
+        /*        // Parse the response body to get the error message
+                ErrorDialog errorDialog = new ErrorDialog(labels.getString("error"), labels.getString("loginFailedTitle"), labels.getString("loginFailedMessage"), FontAwesomeSolid.EXCLAMATION_CIRCLE);
+                return null;*/
             }
 
             // Convert JSON response to UserResponse object
-            ObjectMapper mapper = new ObjectMapper();
             mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
             UserResponse userResponse = mapper.readValue(response.body(), UserResponse.class);
             this.userResponse = userResponse;

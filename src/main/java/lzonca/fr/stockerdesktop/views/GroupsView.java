@@ -4,27 +4,35 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import lzonca.fr.stockerdesktop.components.ErrorDialog;
-import lzonca.fr.stockerdesktop.models.User;
 import lzonca.fr.stockerdesktop.models.Groupe;
+import lzonca.fr.stockerdesktop.models.User;
 import lzonca.fr.stockerdesktop.system.HttpManager;
+import lzonca.fr.stockerdesktop.system.LanguageManager;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.http.HttpResponse;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class GroupsView {
+    private final HttpManager httpManager;
 
-    private HttpManager httpManager;
+    @FXML
+    public TitledPane membersPane;
+
+    @FXML
+    public TitledPane groupsPane;
+
+    @FXML
+    public Label groupsLabel;
 
     @FXML
     private VBox groupsContainer; // This is the container for the group labels in your FXML file
@@ -51,10 +59,28 @@ public class GroupsView {
 
     @FXML
     private Label buttonLabel;
+    private ResourceBundle labels;
 
     @FXML
     public void initialize() {
-        refreshButton.setOnAction(event -> refreshGroups());
+        refreshButton.setOnAction(_ -> refreshGroups());
+        loadResourceBundle();
+        updateText(labels);
+        refreshGroups();
+    }
+
+    private void loadResourceBundle() {
+        String language = LanguageManager.getLanguage();
+        Locale locale = language != null ? Locale.of(language) : Locale.getDefault();
+        labels = ResourceBundle.getBundle("lzonca.fr.stockerdesktop.lang.GroupsView", locale);
+    }
+
+    private void updateText(ResourceBundle labels) {
+        buttonLabel.setText(labels.getString("refresh"));
+        groupNameLabel.setText(labels.getString("groupName"));
+        membersPane.setText(labels.getString("groupMembers"));
+        groupsPane.setText(labels.getString("groups"));
+        groupsLabel.setText(labels.getString("yourGroups"));
     }
 
     public GroupsView() {
@@ -100,15 +126,15 @@ public class GroupsView {
                     // Refresh the display
                     Platform.runLater(this::displayGroups);
                 } else {
-                    // The request failed. You can handle the error here.
+                    ErrorDialog errorDialog = new ErrorDialog(labels.getString("error"), labels.getString("refreshFailedTitle"), labels.getString("refreshFailedMessage"), FontAwesomeSolid.EXCLAMATION_CIRCLE);
                 }
             } catch (IOException | InterruptedException | URISyntaxException e) {
-                // Handle the exception here
+                Platform.runLater(() -> new ErrorDialog(labels.getString("error"), labels.getString("refreshFailedTitle"), e.getMessage(), FontAwesomeSolid.EXCLAMATION_CIRCLE).showAndWait());
             } finally {
                 // Hide the spinner and show the text
                 Platform.runLater(() -> {
                     refreshIndicator.setVisible(false);
-                    buttonLabel.setText("Actualiser");
+                    buttonLabel.setText(labels.getString("refresh"));
                 });
             }
         }).start();
@@ -131,7 +157,7 @@ public class GroupsView {
         String ownerName = groupe.getProprietaire().getName();
 
         // Create a Label for the owner's name and add it to the VBox
-        Label ownerNameLabel = new Label("Propriétaire: " + ownerName);
+        Label ownerNameLabel = new Label(labels.getString("owner") + ":" + ownerName);
         ownerNameLabel.setStyle("-fx-font-size: 20px;");
         vbox.getChildren().add(ownerNameLabel);
 
@@ -140,46 +166,47 @@ public class GroupsView {
 
         // Create a TitledPane with a TableView for the members
         TitledPane membersPane = new TitledPane();
-        membersPane.setText("Membres du groupe");
+        membersPane.setText(labels.getString("groupMembers"));
 
         // Create a TableView to hold the group members
         TableView<User> membersTable = new TableView<>();
 
         // Create the name column
-        TableColumn<User, String> nameColumn = new TableColumn<>("Nom de l'utilisateur");
-        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        TableColumn<User, String> nameColumn = new TableColumn<>();
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name")); // use the exact field name
+        nameColumn.setText(labels.getString("username")); // set the displayed column name based on the locale // use the exact field name
 
         // Create the email column
-        TableColumn<User, String> emailColumn = new TableColumn<>("Email");
-        emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
+        TableColumn<User, String> emailColumn = new TableColumn<>();
+        emailColumn.setCellValueFactory(new PropertyValueFactory<>("email")); // use the exact field name
+        emailColumn.setText(labels.getString("email")); // set the displayed column name based on the locale
 
         // Add the columns to the TableView
         membersTable.getColumns().add(nameColumn);
         membersTable.getColumns().add(emailColumn);
 
         TextField emailField = new TextField();
-        emailField.setPromptText("Enter user email");
+        emailField.setPromptText(labels.getString("enterEmail"));
 
-        Button addUserButton = new Button("Add User");
-        addUserButton.setOnAction(event -> addUserToGroup(groupe.getId(), emailField.getText())); // Pass the group ID to the event handler
+        Button addUserButton = new Button(labels.getString("addUser"));
+        addUserButton.getStyleClass().add("default-button");
+        addUserButton.setOnAction(_ -> addUserToGroup(groupe.getId(), emailField.getText())); // Pass the group ID to the event handler
         vbox.getChildren().add(addUserButton);
 
         // Create a TextField for the user to enter an email
 
-
         // Modify the addUserButton event handler to get the text from the TextField
-        addUserButton.setOnAction(event -> {
+        addUserButton.setOnAction((ActionEvent _) -> {
             String email = emailField.getText();
             if (!email.isEmpty()) {
                 addUserToGroup(groupe.getId(), email);
                 emailField.clear();
             } else {
                 Platform.runLater(() -> {
-                    new ErrorDialog("Erreur", "Impossible d'ajouter l'utilisateur au groupe", "Il faut spécifier un mail.", FontAwesomeSolid.EXCLAMATION_CIRCLE).showAndWait();
+                    new ErrorDialog(labels.getString("error"), labels.getString("addUserTitle"), labels.getString("addUserMessage"), FontAwesomeSolid.EXCLAMATION_CIRCLE).showAndWait();
                 });
             }
         });
-
 
         // Add the TextField to the VBox
         vbox.getChildren().add(emailField);

@@ -6,19 +6,21 @@ import javafx.scene.Parent;
 import javafx.scene.SubScene;
 import javafx.scene.control.Button;
 import lzonca.fr.stockerdesktop.App;
-import lzonca.fr.stockerdesktop.interfaces.LocaleChangeListener;
 import lzonca.fr.stockerdesktop.models.User;
 import lzonca.fr.stockerdesktop.responses.UserResponse;
-import lzonca.fr.stockerdesktop.system.CurrentUser;
-import lzonca.fr.stockerdesktop.system.TokenManager;
+import lzonca.fr.stockerdesktop.system.LanguageManager;
 
 import java.io.IOException;
+import java.util.Locale;
 import java.util.Objects;
+import java.util.ResourceBundle;
 
-public class MainView implements LocaleChangeListener {
+public class MainView {
 
     private UserResponse userResponse;
     private User user; // Add this field
+
+    private ResourceBundle labels;
 
     @FXML
     private Button goToHome;
@@ -39,10 +41,6 @@ public class MainView implements LocaleChangeListener {
     private SettingsView settingsViewController; // Add this field
 
 
-    @Override
-    public void onLocaleChange() {
-        // Reload the MainView
-    }
     @FXML
     public void initialize() {
         try {
@@ -54,13 +52,26 @@ public class MainView implements LocaleChangeListener {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        if (settingsViewController != null) {
-            settingsViewController.setLocaleChangeListener(this);
-        }
+        loadResourceBundle();
+        updateText(labels);
+
     }
-    public SettingsView getSettingsViewController() {
-        return settingsViewController;
+
+
+
+    private void loadResourceBundle() {
+        String language = LanguageManager.getLanguage();
+        Locale locale = language != null ? Locale.of(language) : Locale.getDefault();
+        labels = ResourceBundle.getBundle("lzonca.fr.stockerdesktop.lang.MainView", locale);
     }
+
+    private void updateText(ResourceBundle labels) {
+        goToHome.setText(labels.getString("home"));
+        goToStocks.setText(labels.getString("stocks"));
+        goToGroups.setText(labels.getString("groups"));
+        goToSettings.setText(labels.getString("settings"));
+    }
+
     public void setUser(User user) {
         this.user = user;
         if (homeViewController != null) {

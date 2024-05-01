@@ -16,107 +16,100 @@
 <AnchorPane prefHeight="660.0" prefWidth="1001.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="lzonca.fr.stockerdesktop.views.MainView">
    <BorderPane layoutY="-2.0" prefHeight="658.0" prefWidth="1001.0" AnchorPane.bottomAnchor="-32.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-2.0">
       <top>
-         <HBox alignment="CENTER_LEFT" prefHeight="67.0" prefWidth="1001.0" spacing="20.0" style="-fx-background-color: #92AA83;" stylesheets="@css/styles.css" BorderPane.alignment="CENTER">
-            <children>
-               <ImageView fitHeight="36.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
-                  <image>
-                     <Image url="@assets/stocker.png" />
-                  </image>
-               </ImageView>
-               <Label text="Stocker desktop">
-                  <font>
-                     <Font size="29.0" />
-                  </font>
-               </Label>
-            </children>
+         <HBox alignment="CENTER_LEFT" prefHeight="67.0" prefWidth="1001.0" spacing="20.0"
+               style="-fx-background-color: #92AA83;" stylesheets="@css/styles.css" BorderPane.alignment="CENTER">
             <BorderPane.margin>
-               <Insets />
+               <Insets/>
             </BorderPane.margin>
             <padding>
-               <Insets left="30.0" />
+               <Insets left="30.0"/>
             </padding>
+            <ImageView fitHeight="36.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
+               <Image url="@assets/stocker.png"/>
+            </ImageView>
+            <Label text="Stocker desktop">
+               <font>
+                  <Font size="29.0"/>
+               </font>
+            </Label>
          </HBox>
       </top>
       <center>
          <AnchorPane prefHeight="570.0" prefWidth="978.0" BorderPane.alignment="CENTER">
-            <children>
-               <HBox AnchorPane.bottomAnchor="32.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                  <children>
-                     <VBox alignment="TOP_CENTER" prefHeight="595.0" prefWidth="173.0" spacing="25.0" style="-fx-background-color: #B0BEA9;">
-                        <children>
-                           <Button alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#goToHome" prefHeight="50.0" prefWidth="195.0" styleClass="main-button" text="Home" textAlignment="RIGHT">
-                              <font>
-                                 <Font size="14.0" />
-                              </font>
-                              <graphic>
-                                 <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
-                                    <image>
-                                       <Image url="@assets/home.png" />
-                                    </image>
-                                 </ImageView>
-                              </graphic>
-                              <padding>
-                                 <Insets left="30.0" />
-                              </padding>
-                           </Button>
-                           <Button alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#goToStocks" prefHeight="50.0" prefWidth="185.0" styleClass="main-button" text="Vos stocks" textAlignment="RIGHT">
-                              <graphic>
-                                 <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
-                                    <image>
-                                       <Image url="@assets/stock.png" />
-                                    </image>
-                                 </ImageView>
-                              </graphic>
-                              <font>
-                                 <Font size="14.0" />
-                              </font>
-                              <padding>
-                                 <Insets left="30.0" />
-                              </padding>
-                           </Button>
-                           <Button alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#goToGroups" prefHeight="50.0" prefWidth="195.0" styleClass="main-button" text="Vos groupes" textAlignment="RIGHT">
-                              <graphic>
-                                 <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
-                                    <image>
-                                       <Image url="@assets/groups.png" />
-                                    </image>
-                                 </ImageView>
-                              </graphic>
-                              <font>
-                                 <Font size="14.0" />
-                              </font>
-                              <padding>
-                                 <Insets left="30.0" />
-                              </padding>
-                           </Button>
-                           <Button alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#goToSettings" prefHeight="50.0" prefWidth="195.0" styleClass="main-button" text="Paramètres" textAlignment="RIGHT">
-                              <graphic>
-                                 <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
-                                    <image>
-                                       <Image url="@assets/settings.png" />
-                                    </image>
-                                 </ImageView>
-                              </graphic>
-                              <font>
-                                 <Font size="14.0" />
-                              </font>
-                              <padding>
-                                 <Insets left="30.0" />
-                              </padding>
-                           </Button>
-                        </children>
-                        <padding>
-                           <Insets top="25.0" />
-                        </padding>
-                     </VBox>
-                     <SubScene fx:id="subScene" height="600.0" width="828.0">
-                        <root>
-                           <Region />
-                        </root>
-                     </SubScene>
-                  </children>
-               </HBox>
-            </children>
+            <HBox AnchorPane.bottomAnchor="32.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                  AnchorPane.topAnchor="0.0">
+               <VBox alignment="TOP_CENTER" prefHeight="595.0" prefWidth="173.0" spacing="25.0"
+                     style="-fx-background-color: #B0BEA9;">
+                  <padding>
+                     <Insets top="25.0"/>
+                  </padding>
+                  <Button fx:id="goToHome" alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#goToHome"
+                          prefHeight="50.0" prefWidth="195.0" styleClass="main-button" text="Home"
+                          textAlignment="RIGHT">
+                     <font>
+                        <Font size="14.0"/>
+                     </font>
+                     <graphic>
+                        <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                           <Image url="@assets/home.png"/>
+                        </ImageView>
+                     </graphic>
+                     <padding>
+                        <Insets left="30.0"/>
+                     </padding>
+                  </Button>
+                  <Button fx:id="goToStocks" alignment="BASELINE_LEFT" mnemonicParsing="false"
+                          onAction="#goToStocks" prefHeight="50.0" prefWidth="185.0" styleClass="main-button"
+                          text="Vos stocks" textAlignment="RIGHT">
+                     <graphic>
+                        <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                           <Image url="@assets/stock.png"/>
+                        </ImageView>
+                     </graphic>
+                     <font>
+                        <Font size="14.0"/>
+                     </font>
+                     <padding>
+                        <Insets left="30.0"/>
+                     </padding>
+                  </Button>
+                  <Button fx:id="goToGroups" alignment="BASELINE_LEFT" mnemonicParsing="false"
+                          onAction="#goToGroups" prefHeight="50.0" prefWidth="195.0" styleClass="main-button"
+                          text="Vos groupes" textAlignment="RIGHT">
+                     <graphic>
+                        <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                           <Image url="@assets/groups.png"/>
+                        </ImageView>
+                     </graphic>
+                     <font>
+                        <Font size="14.0"/>
+                     </font>
+                     <padding>
+                        <Insets left="30.0"/>
+                     </padding>
+                  </Button>
+                  <Button fx:id="goToSettings" alignment="BASELINE_LEFT" mnemonicParsing="false"
+                          onAction="#goToSettings" prefHeight="50.0" prefWidth="195.0" styleClass="main-button"
+                          text="Paramètres" textAlignment="RIGHT">
+                     <graphic>
+                        <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                           <Image url="@assets/settings.png"/>
+                        </ImageView>
+                     </graphic>
+                     <font>
+                        <Font size="14.0"/>
+                     </font>
+                     <padding>
+                        <Insets left="30.0"/>
+                     </padding>
+                  </Button>
+               </VBox>
+               <SubScene fx:id="subScene" height="600.0" width="828.0">
+                  <root>
+                     <Region/>
+                  </root>
+               </SubScene>
+            </HBox>
          </AnchorPane>
       </center>
    </BorderPane>

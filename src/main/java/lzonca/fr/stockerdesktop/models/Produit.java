@@ -1,6 +1,6 @@
 package lzonca.fr.stockerdesktop.models;
 
-public class Produit {
+public final class Produit {
     private int id;
     private String code;
     private String nom;

@@ -6,23 +6,17 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
-import javafx.geometry.Rectangle2D;
 import lzonca.fr.stockerdesktop.models.User;
 import lzonca.fr.stockerdesktop.system.HttpManager;
-import lzonca.fr.stockerdesktop.system.LanguageManager;
 import lzonca.fr.stockerdesktop.system.TokenManager;
-import lzonca.fr.stockerdesktop.views.HomeView;
 import lzonca.fr.stockerdesktop.views.MainView;
+import org.kordamp.bootstrapfx.BootstrapFX;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.http.HttpResponse;
-import java.util.Locale;
 import java.util.Objects;
-import java.util.ResourceBundle;
-import java.util.prefs.Preferences;
 
 public class App extends Application {
     double x, y;
@@ -33,20 +27,8 @@ public class App extends Application {
         FXMLLoader fxmlLoader;
         Scene scene;
 
-
-        String language = LanguageManager.getLanguage();
-        if (language != null) {
-            System.out.println("Language: " + LanguageManager.getLanguage());
-        } else {
-            System.out.println("No language set");
-        }
-
-        Locale locale = language != null ? Locale.of(language) : Locale.getDefault();
-        ResourceBundle labels = ResourceBundle.getBundle("lzonca.fr.stockerdesktop.auth", locale);
-
-
         if (TokenManager.hasToken()) {
-            fxmlLoader = new FXMLLoader(App.class.getResource("MainView.fxml"), labels);
+            fxmlLoader = new FXMLLoader(App.class.getResource("MainView.fxml"));
             HttpManager httpManager = new HttpManager();
             HttpResponse<String> userResponse = null;
             try {
@@ -69,7 +51,7 @@ public class App extends Application {
                 scene = new Scene(fxmlLoader.load());
             }
         } else {
-            fxmlLoader = new FXMLLoader(App.class.getResource("AuthView.fxml"), labels);
+            fxmlLoader = new FXMLLoader(App.class.getResource("AuthView.fxml"));
             scene = new Scene(fxmlLoader.load());
         }
 
@@ -84,6 +66,7 @@ public class App extends Application {
         });
 
         scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("css/styles.css")).toExternalForm());
+        scene.getStylesheets().add(BootstrapFX.bootstrapFXStylesheet());
         stage.setTitle("Stocker Desktop");
 
         logo = new Image(Objects.requireNonNull(getClass().getResource("/lzonca/fr/stockerdesktop/assets/stocker.png")).toExternalForm());

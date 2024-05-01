@@ -15,65 +15,65 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="622.0" prefWidth="972.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="lzonca.fr.stockerdesktop.views.AuthView">
-   <children>
-      <VBox alignment="TOP_CENTER" prefHeight="622.0" prefWidth="972.0" spacing="20.0" style="-fx-background-color: #F1F7EE;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-         <children>
-            <ImageView fitHeight="98.0" fitWidth="123.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@assets/stocker.png" />
-               </image>
-               <VBox.margin>
-                  <Insets top="30.0" />
-               </VBox.margin>
-            </ImageView>
-            <Label alignment="CENTER" prefHeight="56.0" prefWidth="260.0" text="Se connecter">
-               <VBox.margin>
-                  <Insets />
-               </VBox.margin>
-               <font>
-                  <Font size="38.0" />
-               </font>
-            </Label>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Email" textAlignment="CENTER" wrappingWidth="89.13671875">
-               <font>
-                  <Font size="24.0" />
-               </font>
-            </Text>
-            <TextField fx:id="emailField" alignment="CENTER" prefHeight="44.0" prefWidth="672.0">
-               <opaqueInsets>
-                  <Insets />
-               </opaqueInsets>
-               <VBox.margin>
-                  <Insets left="150.0" right="150.0" />
-               </VBox.margin>
-            </TextField>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Mot de passe" textAlignment="CENTER" wrappingWidth="151.13671875">
-               <font>
-                  <Font size="24.0" />
-               </font>
-            </Text>
-            <PasswordField fx:id="passwordField" prefHeight="45.0" prefWidth="672.0">
-               <VBox.margin>
-                  <Insets left="150.0" right="150.0" />
-               </VBox.margin>
-            </PasswordField>
-            <Button fx:id="loginButton" mnemonicParsing="false" onAction="#login" prefHeight="50.0" prefWidth="145.0" text="Se connecter">
-               <font>
-                  <Font size="20.0" />
-               </font>
-            </Button>
-            <Hyperlink text="Pas de compte ?" />
-            <MenuButton mnemonicParsing="false" text="Langage">
-               <items>
-                  <MenuItem fx:id="frenchMenuItem" mnemonicParsing="false" text="Français" />
-                  <MenuItem fx:id="englishMenuItem" mnemonicParsing="false" text="English" />
-               </items>
-            </MenuButton>
-         </children>
+<AnchorPane prefHeight="622.0" prefWidth="972.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="lzonca.fr.stockerdesktop.views.AuthView">
+   <VBox alignment="TOP_CENTER" prefHeight="622.0" prefWidth="972.0" spacing="20.0"
+         style="-fx-background-color: #F1F7EE;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+         AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <opaqueInsets>
+         <Insets/>
+      </opaqueInsets>
+      <ImageView fitHeight="98.0" fitWidth="123.0" pickOnBounds="true" preserveRatio="true">
+         <VBox.margin>
+            <Insets top="30.0"/>
+         </VBox.margin>
+         <Image url="@assets/stocker.png"/>
+      </ImageView>
+      <Label alignment="CENTER" prefHeight="56.0" prefWidth="260.0" text="Se connecter">
+         <VBox.margin>
+            <Insets/>
+         </VBox.margin>
+         <font>
+            <Font size="38.0"/>
+         </font>
+      </Label>
+      <Text fx:id="emailLabel" strokeType="OUTSIDE" strokeWidth="0.0" text="Email" textAlignment="CENTER"
+            wrappingWidth="89.13671875">
+         <font>
+            <Font size="24.0"/>
+         </font>
+      </Text>
+      <TextField fx:id="emailField" alignment="CENTER" prefHeight="44.0" prefWidth="672.0">
          <opaqueInsets>
-            <Insets />
+            <Insets/>
          </opaqueInsets>
-      </VBox>
-   </children>
+         <VBox.margin>
+            <Insets left="150.0" right="150.0"/>
+         </VBox.margin>
+      </TextField>
+      <Text fx:id="passwordLabel" strokeType="OUTSIDE" strokeWidth="0.0" text="Mot de passe" textAlignment="CENTER"
+            wrappingWidth="151.13671875">
+         <font>
+            <Font size="24.0"/>
+         </font>
+      </Text>
+      <PasswordField fx:id="passwordField" alignment="CENTER" prefHeight="45.0" prefWidth="672.0">
+         <VBox.margin>
+            <Insets left="150.0" right="150.0"/>
+         </VBox.margin>
+      </PasswordField>
+      <Button fx:id="loginButton" mnemonicParsing="false" onAction="#login" prefHeight="50.0" prefWidth="145.0"
+              text="Se connecter">
+         <font>
+            <Font size="20.0"/>
+         </font>
+      </Button>
+      <Hyperlink fx:id="noAccount" text="Pas de compte ?"/>
+      <MenuButton mnemonicParsing="false" text="Langage" styleClass="split-menu-btn, split-menu-btn-default">
+         <items>
+            <MenuItem fx:id="frenchMenuItem" mnemonicParsing="false" text="Français"/>
+            <MenuItem fx:id="englishMenuItem" mnemonicParsing="false" text="English"/>
+         </items>
+      </MenuButton>
+   </VBox>
 </AnchorPane>

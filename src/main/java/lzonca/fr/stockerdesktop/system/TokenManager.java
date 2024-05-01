@@ -1,12 +1,5 @@
 package lzonca.fr.stockerdesktop.system;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lzonca.fr.stockerdesktop.responses.UserResponse;
-
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.http.HttpResponse;
 import java.util.prefs.Preferences;
 
 public class TokenManager {

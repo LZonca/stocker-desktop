@@ -15,8 +15,10 @@ public class ErrorDialog extends Alert {
         setTitle(title);
         setHeaderText(headerText);
         setContentText(contentText);
+
         FontIcon fontIcon = new FontIcon(icon.getDescription());
         fontIcon.setIconSize(32);
+
         setGraphic(fontIcon);
         Image iconImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/lzonca/fr/stockerdesktop/assets/stocker.png")));
 

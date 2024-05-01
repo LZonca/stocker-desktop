@@ -9,7 +9,7 @@ public class Groupe {
     private String image;
     private User proprietaire; // Updated from int to User
     private List<Stock> stocks;
-    private List<User> members = new ArrayList<>();
+    private final List<User> members = new ArrayList<>();
 
     // getters and setters
     public int getId() {
