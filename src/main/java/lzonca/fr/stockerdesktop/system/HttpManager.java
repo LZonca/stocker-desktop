@@ -15,6 +15,8 @@ public class HttpManager {
     /*private final String baseUrl = "http://localhost:8000/api";*/
     private final String token = TokenManager.getToken();
 
+    private final String locale = "en";
+
     private final HttpClient client;
 
     public HttpManager() {
@@ -24,6 +26,7 @@ public class HttpManager {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(baseUrl + "/user"))
                 .header("Authorization", "Bearer " + TokenManager.getToken())
+                .header("Accept-Language", locale)
                 .build();
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
@@ -44,6 +47,7 @@ public class HttpManager {
                 .uri(new URI(baseUrl + "/groups/" + groupId + "/add"))
                 .header("Authorization", "Bearer " + token)
                 .header("Content-Type", "application/json")
+                .header("Accept-Language", locale)
                 .POST(HttpRequest.BodyPublishers.ofString("{\"email\":\"" + email + "\"}"))
                 .timeout(Duration.of(5, SECONDS))
                 .build();
@@ -61,6 +65,7 @@ public class HttpManager {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(new URI(baseUrl + "/user/groups"))
                 .header("Authorization", "Bearer " + token)
+                .header("Accept-Language", locale)
                 .GET()
                 .build();
 

@@ -1,5 +1,6 @@
 package lzonca.fr.stockerdesktop.views;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.application.Platform;
@@ -8,15 +9,18 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import lzonca.fr.stockerdesktop.components.ErrorDialog;
 import lzonca.fr.stockerdesktop.models.User;
 import lzonca.fr.stockerdesktop.models.Groupe;
 import lzonca.fr.stockerdesktop.system.HttpManager;
+import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.http.HttpResponse;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 public class GroupsView {
 
@@ -64,12 +68,12 @@ public class GroupsView {
 
     private void displayGroups() {
         groupsAccordion.getPanes().clear(); // Clear the current display
-        for (Groupe groupe : user.getGroupes()) {
-            // Create a new TitledPane for each group
-            TitledPane groupPane = createGroupAccordion(groupe);
-
-            // Add the groupPane to the Accordion
-            groupsAccordion.getPanes().add(groupPane);
+        List<Groupe> groupes = user.getGroupes();
+        if (groupes != null) {
+            for (Groupe groupe : groupes) {
+                TitledPane groupPane = createGroupAccordion(groupe);
+                groupsAccordion.getPanes().add(groupPane);
+            }
         }
     }
 
@@ -169,8 +173,13 @@ public class GroupsView {
             if (!email.isEmpty()) {
                 addUserToGroup(groupe.getId(), email);
                 emailField.clear();
+            } else {
+                Platform.runLater(() -> {
+                    new ErrorDialog("Erreur", "Impossible d'ajouter l'utilisateur au groupe", "Il faut spécifier un mail.", FontAwesomeSolid.EXCLAMATION_CIRCLE).showAndWait();
+                });
             }
         });
+
 
         // Add the TextField to the VBox
         vbox.getChildren().add(emailField);
@@ -198,13 +207,29 @@ public class GroupsView {
     private void addUserToGroup(int groupId, String email) {
         try {
             HttpResponse<String> response = httpManager.addUserToGroup(groupId, email);
+            System.out.println(response.body());
             if (response.statusCode() == 200) {
                 displayGroups();
             } else {
-                // The request failed. You can handle the error here.
+                ObjectMapper mapper = new ObjectMapper();
+                Map<String, List<String>> responseMap;
+                try {
+                    responseMap = mapper.readValue(response.body(), new TypeReference<Map<String, List<String>>>(){});
+                } catch (IOException e) {
+                    // If the response body cannot be parsed, use a default error message
+                    responseMap = Map.of("email", List.of("An error occurred while adding the user to the group."));
+                }
+                List<String> errorMessages = responseMap.getOrDefault("email", List.of("An error occurred while adding the user to the group."));
+                String errorMessage = String.join(", ", errorMessages);
+
+                Platform.runLater(() -> {
+                    new ErrorDialog("Error", "Failed to add user to group", errorMessage, FontAwesomeSolid.EXCLAMATION_TRIANGLE).showAndWait();
+                });
             }
         } catch (IOException | InterruptedException | URISyntaxException e) {
-            // Handle the exception here
+            Platform.runLater(() -> {
+                new ErrorDialog("Error", "Failed to add user to group", e.getMessage(), FontAwesomeSolid.EXCLAMATION_TRIANGLE).showAndWait();
+            });
         }
     }
 }

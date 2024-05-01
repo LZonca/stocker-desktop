@@ -11,6 +11,7 @@ import javafx.stage.Stage;
 import javafx.geometry.Rectangle2D;
 import lzonca.fr.stockerdesktop.models.User;
 import lzonca.fr.stockerdesktop.system.HttpManager;
+import lzonca.fr.stockerdesktop.system.LanguageManager;
 import lzonca.fr.stockerdesktop.system.TokenManager;
 import lzonca.fr.stockerdesktop.views.HomeView;
 import lzonca.fr.stockerdesktop.views.MainView;
@@ -18,7 +19,10 @@ import lzonca.fr.stockerdesktop.views.MainView;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.http.HttpResponse;
+import java.util.Locale;
 import java.util.Objects;
+import java.util.ResourceBundle;
+import java.util.prefs.Preferences;
 
 public class App extends Application {
     double x, y;
@@ -28,8 +32,21 @@ public class App extends Application {
         System.setProperty("javafx.platform", "desktop");
         FXMLLoader fxmlLoader;
         Scene scene;
+
+
+        String language = LanguageManager.getLanguage();
+        if (language != null) {
+            System.out.println("Language: " + LanguageManager.getLanguage());
+        } else {
+            System.out.println("No language set");
+        }
+
+        Locale locale = language != null ? Locale.of(language) : Locale.getDefault();
+        ResourceBundle labels = ResourceBundle.getBundle("lzonca.fr.stockerdesktop.auth", locale);
+
+
         if (TokenManager.hasToken()) {
-            fxmlLoader = new FXMLLoader(App.class.getResource("MainView.fxml"));
+            fxmlLoader = new FXMLLoader(App.class.getResource("MainView.fxml"), labels);
             HttpManager httpManager = new HttpManager();
             HttpResponse<String> userResponse = null;
             try {
@@ -41,7 +58,7 @@ public class App extends Application {
             MainView mainViewController = fxmlLoader.getController();
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-            User user = null;
+            User user;
             assert userResponse != null;
             if (userResponse.body().startsWith("{")) {
                 user = mapper.readValue(userResponse.body(), User.class);
@@ -52,7 +69,7 @@ public class App extends Application {
                 scene = new Scene(fxmlLoader.load());
             }
         } else {
-            fxmlLoader = new FXMLLoader(App.class.getResource("AuthView.fxml"));
+            fxmlLoader = new FXMLLoader(App.class.getResource("AuthView.fxml"), labels);
             scene = new Scene(fxmlLoader.load());
         }
 
@@ -74,6 +91,8 @@ public class App extends Application {
         stage.setScene(scene);
         stage.show();
     }
+
+
 
     public static void main(String[] args) {
         launch();

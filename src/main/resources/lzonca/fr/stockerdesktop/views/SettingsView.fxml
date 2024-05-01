@@ -3,7 +3,10 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.ScrollBar?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
@@ -18,16 +21,20 @@
                   <Font size="30.0" />
                </font>
             </Label>
-            <Label fx:id="currentMailField" text="Votre email actuel:" />
+             <MenuButton mnemonicParsing="false" text="Langage">
+                 <items>
+                     <MenuItem fx:id="frenchMenuItem" mnemonicParsing="false" text="Français" />
+                     <MenuItem fx:id="englishMenuItem" mnemonicParsing="false" text="English" />
+                 </items>
+             </MenuButton>
+            <Label fx:id="currentMailLabel" />
             <TextField fx:id="emailField" />
-            <Button mnemonicParsing="false" prefHeight="33.0" prefWidth="167.0" styleClass="default-button" text="Changer l'email" />
-            <Label text="Mot de passe actuel:" />
+             <Button fx:id="changeEmailButton" mnemonicParsing="false" prefHeight="33.0" prefWidth="167.0" styleClass="default-button" text="Changer l'email" />
+             <Label fx:id="currentPasswordLabel" text="Mot de passe actuel:" />
             <PasswordField fx:id="passwordField" />
-            <Label text="Confirmez le mot de passe" />
-            <PasswordField fx:id="passwordConfirmationField" />
-            <Button mnemonicParsing="false" prefHeight="37.0" prefWidth="178.0" styleClass="default-button" text="Changer le mot de passe" />
-              <Button fx:id="logoutButton" mnemonicParsing="false" onAction="#logout" prefHeight="30.0" prefWidth="198.0" styleClass="default-button" style="-fx-border-radius: 50;" text="Se déconnecter">
-                  <font>
+             <Label fx:id="confirmPasswordLabel" text="Confirmez le mot de passe" />            <PasswordField fx:id="passwordConfirmationField" />
+             <Button fx:id="changePasswordButton" mnemonicParsing="false" prefHeight="37.0" prefWidth="178.0" styleClass="default-button" text="Changer le mot de passe" />
+             <Button fx:id="logoutButton" mnemonicParsing="false" onAction="#logout" prefHeight="30.0" prefWidth="198.0" style="-fx-border-radius: 50;" styleClass="default-button" text="Se déconnecter">                  <font>
                       <Font size="20.0" />
                   </font>
               </Button>
@@ -36,5 +43,6 @@
             <Insets left="250.0" right="250.0" top="30.0" />
          </padding>
       </VBox>
+      <ScrollBar layoutX="821.0" layoutY="-1.0" orientation="VERTICAL" prefHeight="600.0" prefWidth="14.0" />
     </children>
 </AnchorPane>

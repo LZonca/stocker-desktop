@@ -6,6 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.SubScene;
 import javafx.scene.control.Button;
 import lzonca.fr.stockerdesktop.App;
+import lzonca.fr.stockerdesktop.interfaces.LocaleChangeListener;
 import lzonca.fr.stockerdesktop.models.User;
 import lzonca.fr.stockerdesktop.responses.UserResponse;
 import lzonca.fr.stockerdesktop.system.CurrentUser;
@@ -14,7 +15,7 @@ import lzonca.fr.stockerdesktop.system.TokenManager;
 import java.io.IOException;
 import java.util.Objects;
 
-public class MainView {
+public class MainView implements LocaleChangeListener {
 
     private UserResponse userResponse;
     private User user; // Add this field
@@ -35,7 +36,13 @@ public class MainView {
     private SubScene subScene;
 
     private HomeView homeViewController;
+    private SettingsView settingsViewController; // Add this field
 
+
+    @Override
+    public void onLocaleChange() {
+        // Reload the MainView
+    }
     @FXML
     public void initialize() {
         try {
@@ -47,8 +54,13 @@ public class MainView {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        if (settingsViewController != null) {
+            settingsViewController.setLocaleChangeListener(this);
+        }
     }
-
+    public SettingsView getSettingsViewController() {
+        return settingsViewController;
+    }
     public void setUser(User user) {
         this.user = user;
         if (homeViewController != null) {
@@ -100,11 +112,14 @@ public class MainView {
         try {
             FXMLLoader loader = new FXMLLoader(App.class.getResource("/lzonca/fr/stockerdesktop/views/SettingsView.fxml"));
             Parent settingsView = loader.load();
-            SettingsView settingsViewController = loader.getController();
-            settingsViewController.setUser(this.user); // Pass the user details to the HomeView
+            SettingsView settingsViewController = loader.getController(); // Store the SettingsView controller
+
+            settingsViewController.setUser(this.user); // Pass the user details to the SettingsView
+            settingsViewController.initialize(); // Call initialize method after setting the user
             subScene.setRoot(settingsView);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
 }

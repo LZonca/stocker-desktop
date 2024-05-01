@@ -4,12 +4,14 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import lzonca.fr.stockerdesktop.App;
 import lzonca.fr.stockerdesktop.models.User;
 import lzonca.fr.stockerdesktop.responses.UserResponse;
 import lzonca.fr.stockerdesktop.system.HttpManager;
+import lzonca.fr.stockerdesktop.system.LanguageManager;
 import lzonca.fr.stockerdesktop.system.TokenManager;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -18,10 +20,20 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.http.HttpResponse;
+import java.util.Locale;
+import java.util.ResourceBundle;
+import java.util.prefs.Preferences;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+
 public class AuthView {
+
+    @FXML
+    public MenuItem frenchMenuItem;
+
+    @FXML
+    public MenuItem englishMenuItem;
 
     @FXML
     private TextField emailField;
@@ -32,13 +44,49 @@ public class AuthView {
     @FXML
     private Button loginButton;
 
+    private final Preferences prefs = Preferences.userNodeForPackage(AuthView.class);
+
     private UserResponse userResponse;
     private User user;
+    private ResourceBundle labels;
 
     @FXML
     public void initialize() {
+        frenchMenuItem.setOnAction(event -> setLocale(Locale.of("fr", "FR")));
+        englishMenuItem.setOnAction(event -> setLocale(Locale.of("en", "US")));
 
+        loadResourceBundle();
     }
+
+    private void loadResourceBundle() {
+        String language = LanguageManager.getLanguage();
+        Locale locale = language != null ? Locale.of(language) : Locale.getDefault();
+        labels = ResourceBundle.getBundle("lzonca.fr.stockerdesktop.auth", locale);
+    }
+
+    private void setLocale(Locale locale) {
+        LanguageManager.setLanguage(locale.getLanguage());
+
+        // Reload the resource bundle and the view
+        loadResourceBundle();
+        reloadView();
+    }
+
+    private void reloadView() {
+        // Get the current stage
+        Stage currentStage = (Stage) loginButton.getScene().getWindow();
+
+        // Load the AuthView again
+        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("AuthView.fxml"), labels);
+        try {
+            Scene scene = new Scene(fxmlLoader.load());
+            currentStage.setScene(scene);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 
     public void login() {
         String email = emailField.getText();

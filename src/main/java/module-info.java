@@ -12,6 +12,8 @@ module lzonca.fr.stockerdesktop {
     requires java.prefs;
     requires java.net.http;
     requires com.fasterxml.jackson.databind;
+    requires org.kordamp.ikonli.core;
+    requires org.kordamp.ikonli.fontawesome5;
 
     opens lzonca.fr.stockerdesktop to javafx.fxml;
     exports lzonca.fr.stockerdesktop;
@@ -23,4 +25,6 @@ module lzonca.fr.stockerdesktop {
     opens lzonca.fr.stockerdesktop.responses to com.fasterxml.jackson.databind;
     exports lzonca.fr.stockerdesktop.models to com.fasterxml.jackson.databind;
     opens lzonca.fr.stockerdesktop.models to com.fasterxml.jackson.databind, javafx.base;
+    exports lzonca.fr.stockerdesktop.interfaces;
+    opens lzonca.fr.stockerdesktop.interfaces to javafx.fxml;
 }
