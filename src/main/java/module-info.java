@@ -14,6 +14,7 @@ module lzonca.fr.stockerdesktop {
     requires com.fasterxml.jackson.databind;
     requires org.kordamp.ikonli.core;
     requires org.kordamp.ikonli.fontawesome5;
+    requires annotations;
 
     opens lzonca.fr.stockerdesktop to javafx.fxml;
     exports lzonca.fr.stockerdesktop;

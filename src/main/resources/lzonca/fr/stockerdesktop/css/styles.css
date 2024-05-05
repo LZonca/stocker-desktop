@@ -13,3 +13,10 @@
 .default-button:hover{
     -fx-background-color: #A9C4A6;
 }
+
+.titled-pane .title {
+    -fx-pref-width: 750px; /* Set the preferred width */
+    -fx-background-color: #B0BEA9; /* Set the background color */
+    -fx-border-color: black;
+}
+

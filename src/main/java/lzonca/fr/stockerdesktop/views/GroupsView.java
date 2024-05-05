@@ -6,15 +6,21 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import lzonca.fr.stockerdesktop.components.ErrorDialog;
 import lzonca.fr.stockerdesktop.models.Groupe;
 import lzonca.fr.stockerdesktop.models.User;
 import lzonca.fr.stockerdesktop.system.HttpManager;
 import lzonca.fr.stockerdesktop.system.LanguageManager;
+import org.controlsfx.glyphfont.FontAwesome;
+import org.jetbrains.annotations.NotNull;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
 
 import java.io.IOException;
@@ -35,7 +41,7 @@ public class GroupsView {
     public Label groupsLabel;
 
     @FXML
-    private VBox groupsContainer; // This is the container for the group labels in your FXML file
+    public Button createGroupBtn;
 
     @FXML
     private ProgressIndicator refreshIndicator;
@@ -46,16 +52,11 @@ public class GroupsView {
     @FXML
     private Accordion groupsAccordion; // This is the Accordion for the groups in your FXML file
 
-    @FXML
-    private TableView<?> membersTable; // This is the TableView for the members in your FXML file
-
     private User user;
 
     @FXML
     private Button refreshButton;
 
-    @FXML
-    private StackPane buttonStackPane;
 
     @FXML
     private Label buttonLabel;
@@ -64,6 +65,7 @@ public class GroupsView {
     @FXML
     public void initialize() {
         refreshButton.setOnAction(_ -> refreshGroups());
+        createGroupBtn.setOnAction(_-> openNewGroupForm());
         loadResourceBundle();
         updateText(labels);
         refreshGroups();
@@ -81,8 +83,27 @@ public class GroupsView {
         membersPane.setText(labels.getString("groupMembers"));
         groupsPane.setText(labels.getString("groups"));
         groupsLabel.setText(labels.getString("yourGroups"));
+        createGroupBtn.setText(labels.getString("createGroup"));
     }
 
+    private void openNewGroupForm() {
+        try {
+            // Load the FXML file
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/lzonca/fr/stockerdesktop/views/CreateGroupForm.fxml"));
+            Parent root = loader.load();
+
+            // Create a new Scene with the loaded FXML file
+            Scene scene = new Scene(root);
+
+            // Create a new Stage to display the form
+            Stage stage = new Stage();
+            stage.setScene(scene);
+            stage.setTitle(labels.getString("createGroup"));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     public GroupsView() {
         this.httpManager = new HttpManager();
     }
@@ -143,10 +164,71 @@ public class GroupsView {
     private TitledPane createGroupAccordion(Groupe groupe) {
         // Create a TitledPane for each group
         TitledPane groupPane = new TitledPane();
-        groupPane.setText(groupe.getNom());
 
         // Create a VBox to hold the group name and the accordions
         VBox vbox = new VBox();
+
+        // Create a HBox for the title region
+        HBox titleBox = new HBox();
+        titleBox.setSpacing(10); // Add some spacing between the label and the button
+
+        // Create a Label for the title text
+        Label titleLabel = new Label(groupe.getNom());
+        titleBox.getChildren().add(titleLabel);
+
+        // Check if the proprietaire_id of the group matches the id of the currently authenticated user
+        if (groupe.getProprietaire().getId() == user.getId()) {
+            // If it does, create a delete button and add it to the HBox
+            Button deleteButton = new Button(labels.getString("delete"));
+            /*deleteButton.setGraphic(FontAwesomeSolid.TRASH);*/
+            deleteButton.getStyleClass().add("default-button");
+            deleteButton.setOnAction(_ -> {
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle(labels.getString("pleaseConfirm"));
+                alert.setHeaderText(labels.getString("deleteGroup") + groupe.getNom());
+                alert.setContentText(labels.getString("deleteGroupConfirmation"));
+
+                Optional<ButtonType> result = alert.showAndWait();
+
+                if (result.isPresent() && result.get() == ButtonType.OK){
+                    HttpManager httpmanager = new HttpManager();
+                    try {
+                        httpmanager.deleteGroup(groupe.getId());
+                    } catch (IOException | InterruptedException | URISyntaxException e) {
+                        throw new RuntimeException(e);
+                    }
+                    groupsAccordion.getPanes().remove(groupPane);
+                }
+            });
+            titleBox.getChildren().add(deleteButton);
+        }else{
+                // If it does, create a leave button and add it to the HBox
+                Button leaveButton = new Button(labels.getString("leaveGroup"));
+                leaveButton.getStyleClass().add("default-button");
+                leaveButton.setOnAction(_ -> {
+                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                    alert.setTitle(labels.getString("pleaseConfirm"));
+                    alert.setHeaderText(labels.getString("leaveGroup") + groupe.getNom());
+                    alert.setContentText(labels.getString("leaveGroupConfirmation"));
+
+                    Optional<ButtonType> result = alert.showAndWait();
+
+                    if (result.isPresent() && result.get() == ButtonType.OK){
+                        HttpManager httpmanager = new HttpManager();
+                        try {
+                            httpmanager.leaveGroup(groupe.getId());
+                        } catch (IOException | InterruptedException | URISyntaxException e) {
+                            throw new RuntimeException(e);
+                        }
+                        groupsAccordion.getPanes().remove(groupPane);
+                    }
+                });
+                titleBox.getChildren().add(leaveButton);
+        }
+
+        // Set the HBox as the graphic of the TitledPane and set the text to null
+        groupPane.setGraphic(titleBox);
+        groupPane.setText(null);
 
         // Create a Label for the group name and add it to the VBox
         Label groupNameLabel = new Label(groupe.getNom());
@@ -181,9 +263,14 @@ public class GroupsView {
         emailColumn.setCellValueFactory(new PropertyValueFactory<>("email")); // use the exact field name
         emailColumn.setText(labels.getString("email")); // set the displayed column name based on the locale
 
+        TableColumn<User, Void> removeButtonColumn = getUserVoidTableColumn(groupe);
+
         // Add the columns to the TableView
         membersTable.getColumns().add(nameColumn);
         membersTable.getColumns().add(emailColumn);
+        if (removeButtonColumn != null){
+            membersTable.getColumns().add(removeButtonColumn);
+        }
 
         TextField emailField = new TextField();
         emailField.setPromptText(labels.getString("enterEmail"));
@@ -192,8 +279,6 @@ public class GroupsView {
         addUserButton.getStyleClass().add("default-button");
         addUserButton.setOnAction(_ -> addUserToGroup(groupe.getId(), emailField.getText())); // Pass the group ID to the event handler
         vbox.getChildren().add(addUserButton);
-
-        // Create a TextField for the user to enter an email
 
         // Modify the addUserButton event handler to get the text from the TextField
         addUserButton.setOnAction((ActionEvent _) -> {
@@ -231,12 +316,92 @@ public class GroupsView {
         return groupPane;
     }
 
+    private TableColumn<User, Void> getUserVoidTableColumn(Groupe groupe) {
+        if (groupe.getProprietaire().getId() == user.getId()) {
+            TableColumn<User, Void> removeButtonColumn = new TableColumn<>("Actions");
+            removeButtonColumn.setCellFactory(_ -> new TableCell<>() {
+                private final Button removeButton = new Button(labels.getString("removeUser"));
+
+                {
+                    removeButton.getStyleClass().add("default-button");
+                    removeButton.setOnAction(_ -> {
+                        User user = getTableView().getItems().get(getIndex());
+
+                        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                        alert.setTitle(labels.getString("pleaseConfirm"));
+                        alert.setHeaderText(labels.getString("deleteUser") + user.getName());
+                        alert.setContentText(labels.getString("deleteUserConfirmation"));
+
+                        Optional<ButtonType> result = alert.showAndWait();
+
+                        if (result.isPresent() && result.get() == ButtonType.OK) {
+                            removeUserFromGroup(groupe.getId(), user);
+                            getTableView().getItems().remove(user);
+                        }
+                    });
+                }
+
+                @Override
+                protected void updateItem(Void item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty) {
+                        setGraphic(null);
+                    } else {
+                        User user = getTableView().getItems().get(getIndex());
+                        if (groupe.getProprietaire().getId() == user.getId()) {
+                            setGraphic(null);
+                        } else {
+                            setGraphic(removeButton);
+                        }
+                    }
+                }
+            });
+            return removeButtonColumn;
+        }else{
+            return null;
+        }
+    }
+
+    private void removeUserFromGroup(int groupId, User user ) {
+        try {
+            System.out.println(user);
+            HttpResponse<String> response = httpManager.removeUserFromGroup(groupId, user);
+            System.out.println(response.body());
+            if (response.statusCode() == 200) {
+                ErrorDialog errorDialog = new ErrorDialog(labels.getString("success"), labels.getString("removeUserSuccessTitle"), labels.getString("removeUserSuccessMessage"), FontAwesomeSolid.CHECK_CIRCLE);
+                errorDialog.showAndWait();
+                refreshGroups();
+            } else {
+                ObjectMapper mapper = new ObjectMapper();
+                Map<String, List<String>> responseMap;
+                try {
+                    responseMap = mapper.readValue(response.body(), new TypeReference<Map<String, List<String>>>(){});
+                } catch (IOException e) {
+                    // If the response body cannot be parsed, use a default error message
+                    responseMap = Map.of("message", List.of("An error occurred while removing the user from the group."));
+                }
+                List<String> errorMessages = responseMap.getOrDefault("email", List.of("An error occurred while removing the user from the group."));
+                String errorMessage = String.join(", ", errorMessages);
+
+                Platform.runLater(() -> {
+                    new ErrorDialog("Error", "Failed to remove user from group", errorMessage, FontAwesomeSolid.EXCLAMATION_TRIANGLE).showAndWait();
+                });
+            }
+        } catch (IOException | InterruptedException | URISyntaxException e) {
+            Platform.runLater(() -> {
+                new ErrorDialog("Error", "Failed to remove user from group", e.getMessage(), FontAwesomeSolid.EXCLAMATION_TRIANGLE).showAndWait();
+            });
+        }
+    }
+    
     private void addUserToGroup(int groupId, String email) {
         try {
             HttpResponse<String> response = httpManager.addUserToGroup(groupId, email);
             System.out.println(response.body());
             if (response.statusCode() == 200) {
-                displayGroups();
+                ErrorDialog errorDialog = new ErrorDialog(labels.getString("success"), labels.getString("addUserSuccessTitle"), labels.getString("addUserSuccessMessage"), FontAwesomeSolid.CHECK_CIRCLE);
+                errorDialog.showAndWait();
+                refreshGroups();
             } else {
                 ObjectMapper mapper = new ObjectMapper();
                 Map<String, List<String>> responseMap;

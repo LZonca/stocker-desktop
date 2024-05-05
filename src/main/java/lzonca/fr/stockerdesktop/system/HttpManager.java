@@ -1,7 +1,10 @@
 package lzonca.fr.stockerdesktop.system;
 
 import javafx.application.Platform;
+import lzonca.fr.stockerdesktop.components.ErrorDialog;
 import lzonca.fr.stockerdesktop.components.TokenExpiredDialog;
+import lzonca.fr.stockerdesktop.models.User;
+import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
 
 import java.io.IOException;
 import java.net.URI;
@@ -32,13 +35,114 @@ public class HttpManager {
     private void loadResourceBundle() {
         String language = LanguageManager.getLanguage();
         Locale locale = language != null ? Locale.of(language) : Locale.getDefault();
-        System.out.println("Loading resource bundle for locale: " + locale);
+        /*System.out.println("Loading resource bundle for locale: " + locale);*/
         try {
             tokenLabels = ResourceBundle.getBundle("lzonca.fr.stockerdesktop.lang.ErrorToken", locale);
             System.out.println("Successfully loaded resource bundle");
         } catch (MissingResourceException e) {
             System.out.println("Failed to load resource bundle: " + e.getMessage());
         }
+    }
+
+    public HttpResponse<String> removeUserFromGroup(int groupId, User user) throws IOException, InterruptedException, URISyntaxException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(new URI(baseUrl + "/groups/" + groupId + "/users/" + user.getId()))
+                .header("Authorization", "Bearer " + token)
+                .header("Content-Type", "application/json")
+                .header("Accept-Language", locale)
+                .method("PATCH", HttpRequest.BodyPublishers.noBody())
+                .timeout(Duration.of(5, SECONDS))
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        if (response.statusCode() != 201 && response.statusCode() != 200 && response.statusCode() != 409 && response.statusCode() != 403) {
+
+            loadResourceBundle();
+            if (response.statusCode() == 403){
+                Platform.runLater(() -> {
+                    ErrorDialog dialog = new ErrorDialog(tokenLabels.getString("error"), tokenLabels.getString("cannotRemoveUserTitle"), tokenLabels.getString("cannotRemoveUserContent"), FontAwesomeSolid.EXCLAMATION_TRIANGLE);
+                    dialog.showAndWait();
+                });
+            }
+            if (response.statusCode() == 401){
+                TokenManager.removeToken();
+                Platform.runLater(() -> {
+                    TokenExpiredDialog dialog = new TokenExpiredDialog(tokenLabels.getString("tokenExpiredTitle"), tokenLabels.getString("tokenExpiredHeader"), tokenLabels.getString("tokenExpiredContent"));
+                    dialog.showAndWait();
+                });
+            }
+        }
+        return response;
+    }
+
+    public HttpResponse<String> leaveGroup(int groupId) throws IOException, InterruptedException, URISyntaxException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(new URI(baseUrl + "/user/groups/" + groupId + "/leave"))
+                .header("Authorization", "Bearer " + token)
+                .header("Accept-Language", locale)
+                .method("PATCH", HttpRequest.BodyPublishers.noBody())
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        if (response.statusCode() != 201 && response.statusCode() != 200 && response.statusCode() != 409 && response.statusCode() != 204) {
+
+            loadResourceBundle();
+            if (response.statusCode() == 401){
+                TokenManager.removeToken();
+                Platform.runLater(() -> {
+                    TokenExpiredDialog dialog = new TokenExpiredDialog(tokenLabels.getString("tokenExpiredTitle"), tokenLabels.getString("tokenExpiredHeader"), tokenLabels.getString("tokenExpiredContent"));
+                    dialog.showAndWait();
+                });
+            }
+        }
+        return response;
+    }
+
+    public HttpResponse<String> deleteGroup(int groupId) throws IOException, InterruptedException, URISyntaxException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(new URI(baseUrl + "/groups/" + groupId))
+                .header("Authorization", "Bearer " + token)
+                .header("Accept-Language", locale)
+                .DELETE()
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        if (response.statusCode() != 201 && response.statusCode() != 200 && response.statusCode() != 409 && response.statusCode() != 204) {
+            System.out.println(response.statusCode());
+            loadResourceBundle();
+            if (response.statusCode() == 401){
+                TokenManager.removeToken();
+                Platform.runLater(() -> {
+                    TokenExpiredDialog dialog = new TokenExpiredDialog(tokenLabels.getString("tokenExpiredTitle"), tokenLabels.getString("tokenExpiredHeader"), tokenLabels.getString("tokenExpiredContent"));
+                    dialog.showAndWait();
+                });
+            }
+        }
+        return response;
+    }
+
+    public HttpResponse<String> createGroup(String name) throws IOException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(baseUrl + "/user/groups"))
+                .header("Authorization", "Bearer " + token)
+                .header("Content-Type", "application/json")
+                .header("Accept-Language", locale)
+                .POST(HttpRequest.BodyPublishers.ofString("{\"nom\":\"" + name + "\"}"))
+                .timeout(Duration.of(5, SECONDS))
+                .build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        if (response.statusCode() != 201 && response.statusCode() != 200 && response.statusCode() != 409) {
+            loadResourceBundle();
+            if (response.statusCode() == 401){
+                TokenManager.removeToken();
+                Platform.runLater(() -> {
+                    TokenExpiredDialog dialog = new TokenExpiredDialog(tokenLabels.getString("tokenExpiredTitle"), tokenLabels.getString("tokenExpiredHeader"), tokenLabels.getString("tokenExpiredContent"));
+                    dialog.showAndWait();
+                });
+            }
+
+        }
+        return response;
     }
 
     public HttpResponse<String> getUser() throws IOException, InterruptedException {
@@ -75,13 +179,14 @@ public class HttpManager {
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         if (response.statusCode() != 201 && response.statusCode() != 200 && response.statusCode() != 409) {
-
-            TokenManager.removeToken();
             loadResourceBundle();
-            Platform.runLater(() -> {
-                TokenExpiredDialog dialog = new TokenExpiredDialog(tokenLabels.getString("tokenExpiredTitle"), tokenLabels.getString("tokenExpiredHeader"), tokenLabels.getString("tokenExpiredContent"));
-                dialog.showAndWait();
-            });
+            if (response.statusCode() == 401){
+                TokenManager.removeToken();
+                Platform.runLater(() -> {
+                    TokenExpiredDialog dialog = new TokenExpiredDialog(tokenLabels.getString("tokenExpiredTitle"), tokenLabels.getString("tokenExpiredHeader"), tokenLabels.getString("tokenExpiredContent"));
+                    dialog.showAndWait();
+                });
+            }
         }
         return response;
     }
