@@ -70,7 +70,7 @@ public class StocksView {
             // Create a new Stage to display the form
             Stage stage = new Stage();
             stage.setScene(scene);
-            stage.setTitle(labels.getString("createGroup"));
+            stage.setTitle(labels.getString("createStock"));
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();

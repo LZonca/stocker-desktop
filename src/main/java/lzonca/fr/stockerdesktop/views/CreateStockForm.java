@@ -31,7 +31,7 @@ public class CreateStockForm {
     @FXML
     private void initialize() {
         createStockButton.setOnAction(_ -> {
-            createGroup();
+            createStock();
         });
         loadResourceBundle();
         updateText(labels);
@@ -49,14 +49,14 @@ public class CreateStockForm {
         stockNameLabel.setText(labels.getString("stockName"));
     }
 
-    private void createGroup() {
+    private void createStock() {
         if (nameField.getText().isEmpty()) {
             new ErrorDialog(labels.getString("error"), labels.getString("errorTitleFailedToCreateStock"), labels.getString("errorDescTitleCannotBeEmpty"), FontAwesomeSolid.EXCLAMATION_TRIANGLE).showAndWait();
             return;
         }
         try {
             HttpManager httpManager = new HttpManager();
-            httpManager.createGroup(nameField.getText());
+            httpManager.createUserStock(nameField.getText());
             Platform.runLater(() -> {
                 new ErrorDialog(labels.getString("success"), labels.getString("successTitleStockCreated"), labels.getString("successDescStockCreated"), FontAwesomeSolid.CHECK_CIRCLE).showAndWait();
                 // Close the current window
