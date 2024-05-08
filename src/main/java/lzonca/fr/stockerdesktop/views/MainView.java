@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.SubScene;
 import javafx.scene.control.Button;
+import javafx.scene.layout.BorderPane;
 import lzonca.fr.stockerdesktop.App;
 import lzonca.fr.stockerdesktop.models.User;
 import lzonca.fr.stockerdesktop.responses.UserResponse;
@@ -40,10 +41,14 @@ public class MainView {
     private HomeView homeViewController;
     private SettingsView settingsViewController; // Add this field
 
+    @FXML
+    private BorderPane mainBorderPane;
+
 
     @FXML
     public void initialize() {
-
+        subScene.widthProperty().bind(mainBorderPane.widthProperty());
+        subScene.heightProperty().bind(mainBorderPane.heightProperty());
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("/lzonca/fr/stockerdesktop/views/HomeView.fxml"));
             Parent homeView = fxmlLoader.load();

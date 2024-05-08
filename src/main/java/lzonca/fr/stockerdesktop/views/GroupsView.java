@@ -7,6 +7,7 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -257,12 +258,47 @@ public class GroupsView {
         TableColumn<User, String> nameColumn = new TableColumn<>();
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name")); // use the exact field name
         nameColumn.setText(labels.getString("username")); // set the displayed column name based on the locale // use the exact field name
+        nameColumn.prefWidthProperty().bind(membersTable.widthProperty().multiply(0.4)); // Set the width to 50% of the table width
+        nameColumn.setCellFactory(column -> {
+            return new TableCell<User, String>() {
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (item == null || empty) {
+                        setText(null);
+                        setGraphic(null);
+                    } else {
+                        setText(item);
+                        setPadding(new Insets(10)); // Add 10px of padding
+                    }
+                }
+            };
+        });
+        nameColumn.setStyle("-fx-font-size: 18px;"); // Set the font size to 18px
+        nameColumn.setReorderable(false); // Add this line
 
-        // Create the email column
+// Create the email column
         TableColumn<User, String> emailColumn = new TableColumn<>();
         emailColumn.setCellValueFactory(new PropertyValueFactory<>("email")); // use the exact field name
         emailColumn.setText(labels.getString("email")); // set the displayed column name based on the locale
-
+        emailColumn.prefWidthProperty().bind(membersTable.widthProperty().multiply(0.4)); // Set the width to 50% of the table width
+        emailColumn.setCellFactory(column -> {
+            return new TableCell<User, String>() {
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (item == null || empty) {
+                        setText(null);
+                        setGraphic(null);
+                    } else {
+                        setText(item);
+                        setPadding(new Insets(10)); // Add 10px of padding
+                    }
+                }
+            };
+        });
+        emailColumn.setStyle("-fx-font-size: 18px;"); // Set the font size to 18px
+        emailColumn.setReorderable(false); // Add this line
         TableColumn<User, Void> removeButtonColumn = getUserVoidTableColumn(groupe);
 
         // Add the columns to the TableView
@@ -271,6 +307,8 @@ public class GroupsView {
         if (user.getId() == groupe.getProprietaire().getId()) {
             if (removeButtonColumn != null){
                 membersTable.getColumns().add(removeButtonColumn);
+                removeButtonColumn.prefWidthProperty().bind(membersTable.widthProperty().multiply(0.2)); // Set the width to 50% of the table width
+                removeButtonColumn.setReorderable(false); // Add this line
             }
         }
 
@@ -323,6 +361,7 @@ public class GroupsView {
     private TableColumn<User, Void> getUserVoidTableColumn(Groupe groupe) {
         if (groupe.getProprietaire().getId() == user.getId()) {
             TableColumn<User, Void> removeButtonColumn = new TableColumn<>("Actions");
+            removeButtonColumn.setStyle("-fx-font-size: 18px;"); // Set the font size to 18px
             removeButtonColumn.setCellFactory(_ -> new TableCell<>() {
                 private final Button removeButton = new Button(labels.getString("removeUser"));
 
@@ -397,7 +436,7 @@ public class GroupsView {
             });
         }
     }
-    
+
     private void addUserToGroup(int groupId, String email) {
         try {
             HttpResponse<String> response = httpManager.addUserToGroup(groupId, email);

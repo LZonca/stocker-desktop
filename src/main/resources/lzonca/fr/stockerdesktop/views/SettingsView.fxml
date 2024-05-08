@@ -44,5 +44,4 @@
             </font>
         </Button>
     </VBox>
-    <ScrollBar layoutX="821.0" layoutY="-1.0" orientation="VERTICAL" prefHeight="600.0" prefWidth="14.0"/>
 </AnchorPane>

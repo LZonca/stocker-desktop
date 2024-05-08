@@ -11,7 +11,7 @@
             <Insets />
          </VBox.margin>
          <padding>
-            <Insets left="150.0" right="150.0" />
+            <Insets right="175.0" />
          </padding>
          <Label fx:id="welcomeLabel" alignment="CENTER" text="BIENVENUE">
             <font>
