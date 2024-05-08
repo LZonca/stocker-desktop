@@ -26,7 +26,7 @@
             </font>
          </Label>
          <TextField fx:id="nameField" />
-         <Button fx:id="createGroupButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="338.0" styleClass="default-button" stylesheets="@css/styles.css" text="Créer" wrapText="true">
+         <Button fx:id="createGroupButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="338.0" styleClass="default-button" stylesheets="@../../css/styles.css" text="Créer" wrapText="true">
             <font>
                <Font size="19.0" />
             </font></Button>

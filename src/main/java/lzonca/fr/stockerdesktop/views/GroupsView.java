@@ -89,7 +89,7 @@ public class GroupsView {
     private void openNewGroupForm() {
         try {
             // Load the FXML file
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/lzonca/fr/stockerdesktop/views/CreateGroupForm.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/lzonca/fr/stockerdesktop/views/forms/CreateGroupForm.fxml"));
             Parent root = loader.load();
 
             // Create a new Scene with the loaded FXML file
@@ -268,33 +268,37 @@ public class GroupsView {
         // Add the columns to the TableView
         membersTable.getColumns().add(nameColumn);
         membersTable.getColumns().add(emailColumn);
-        if (removeButtonColumn != null){
-            membersTable.getColumns().add(removeButtonColumn);
+        if (user.getId() == groupe.getProprietaire().getId()) {
+            if (removeButtonColumn != null){
+                membersTable.getColumns().add(removeButtonColumn);
+            }
         }
 
         TextField emailField = new TextField();
         emailField.setPromptText(labels.getString("enterEmail"));
+        if(groupe.getProprietaire().getId() == user.getId()) {
 
-        Button addUserButton = new Button(labels.getString("addUser"));
-        addUserButton.getStyleClass().add("default-button");
-        addUserButton.setOnAction(_ -> addUserToGroup(groupe.getId(), emailField.getText())); // Pass the group ID to the event handler
-        vbox.getChildren().add(addUserButton);
+            Button addUserButton = new Button(labels.getString("addUser"));
+            addUserButton.getStyleClass().add("default-button");
+            addUserButton.setOnAction(_ -> addUserToGroup(groupe.getId(), emailField.getText())); // Pass the group ID to the event handler
+            vbox.getChildren().add(addUserButton);
 
-        // Modify the addUserButton event handler to get the text from the TextField
-        addUserButton.setOnAction((ActionEvent _) -> {
-            String email = emailField.getText();
-            if (!email.isEmpty()) {
-                addUserToGroup(groupe.getId(), email);
-                emailField.clear();
-            } else {
-                Platform.runLater(() -> {
-                    new ErrorDialog(labels.getString("error"), labels.getString("addUserTitle"), labels.getString("addUserMessage"), FontAwesomeSolid.EXCLAMATION_CIRCLE).showAndWait();
-                });
-            }
-        });
+            // Modify the addUserButton event handler to get the text from the TextField
+            addUserButton.setOnAction((ActionEvent _) -> {
+                String email = emailField.getText();
+                if (!email.isEmpty()) {
+                    addUserToGroup(groupe.getId(), email);
+                    emailField.clear();
+                } else {
+                    Platform.runLater(() -> {
+                        new ErrorDialog(labels.getString("error"), labels.getString("addUserTitle"), labels.getString("addUserMessage"), FontAwesomeSolid.EXCLAMATION_CIRCLE).showAndWait();
+                    });
+                }
+            });
 
-        // Add the TextField to the VBox
-        vbox.getChildren().add(emailField);
+            // Add the TextField to the VBox
+            vbox.getChildren().add(emailField);
+        }
 
         // Add each member of the group to the TableView
         for (User member : groupe.getMembers()) {

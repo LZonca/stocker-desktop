@@ -40,6 +40,8 @@ public class HomeView {
 
     public void setUser(User user) {
         this.user = user;
+        System.out.println("setUser method called");
+        System.out.println("User: " + this.user);
         if (user != null) {
             userNameLabel.setText(user.getName().toUpperCase());
         }

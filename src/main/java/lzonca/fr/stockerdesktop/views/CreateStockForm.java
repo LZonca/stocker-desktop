@@ -15,21 +15,22 @@ import java.io.IOException;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-public class CreateGroupForm {
+public class CreateStockForm {
 
-    private ResourceBundle labels;
     @FXML
     public Label TitleLabel;
     @FXML
+    public Label stockNameLabel;
+    @FXML
     public TextField nameField;
     @FXML
-    public Button createGroupButton;
-    @FXML
-    public Label groupNameLabel;
+    public Button createStockButton;
+
+    private ResourceBundle labels;
 
     @FXML
     private void initialize() {
-        createGroupButton.setOnAction(_ -> {
+        createStockButton.setOnAction(_ -> {
             createGroup();
         });
         loadResourceBundle();
@@ -39,33 +40,32 @@ public class CreateGroupForm {
     private void loadResourceBundle() {
         String language = LanguageManager.getLanguage();
         Locale locale = language != null ? Locale.of(language) : Locale.getDefault();
-        labels = ResourceBundle.getBundle("lzonca.fr.stockerdesktop.lang.forms.CreateGroupForm", locale);
+        labels = ResourceBundle.getBundle("lzonca.fr.stockerdesktop.lang.forms.CreateStockForm", locale);
     }
 
     private void updateText(ResourceBundle labels) {
-        TitleLabel.setText(labels.getString("createGroup"));
-        createGroupButton.setText(labels.getString("create"));
-        groupNameLabel.setText(labels.getString("groupName"));
+        TitleLabel.setText(labels.getString("createStock"));
+        createStockButton.setText(labels.getString("create"));
+        stockNameLabel.setText(labels.getString("stockName"));
     }
 
     private void createGroup() {
         if (nameField.getText().isEmpty()) {
-            new ErrorDialog(labels.getString("error"), labels.getString("errorTitleFailedToCreateGroup"), labels.getString("errorDescTitleCannotBeEmpty"), FontAwesomeSolid.EXCLAMATION_TRIANGLE).showAndWait();
+            new ErrorDialog(labels.getString("error"), labels.getString("errorTitleFailedToCreateStock"), labels.getString("errorDescTitleCannotBeEmpty"), FontAwesomeSolid.EXCLAMATION_TRIANGLE).showAndWait();
             return;
         }
         try {
             HttpManager httpManager = new HttpManager();
             httpManager.createGroup(nameField.getText());
             Platform.runLater(() -> {
-                new ErrorDialog(labels.getString("success"), labels.getString("successTitleGroupCreated"), labels.getString("successDescGroupCreated"), FontAwesomeSolid.CHECK_CIRCLE).showAndWait();
+                new ErrorDialog(labels.getString("success"), labels.getString("successTitleStockCreated"), labels.getString("successDescStockCreated"), FontAwesomeSolid.CHECK_CIRCLE).showAndWait();
                 // Close the current window
-                Stage stage = (Stage) createGroupButton.getScene().getWindow();
+                Stage stage = (Stage) createStockButton.getScene().getWindow();
                 stage.close();
             });
 
         } catch (IOException | InterruptedException e) {
-            Platform.runLater(() -> new ErrorDialog(labels.getString("error"), labels.getString("errorTitleFailedToCreateGroup"), e.getMessage(), FontAwesomeSolid.EXCLAMATION_TRIANGLE).showAndWait());
+            Platform.runLater(() -> new ErrorDialog(labels.getString("error"), labels.getString("errorTitleFailedToCreateStock"), e.getMessage(), FontAwesomeSolid.EXCLAMATION_TRIANGLE).showAndWait());
         }
     }
-
 }

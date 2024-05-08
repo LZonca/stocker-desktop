@@ -23,7 +23,7 @@
             </font>
         </Label>
       <Button fx:id="createGroupBtn" mnemonicParsing="false" styleClass="default-button" text="New group" />
-        <Accordion fx:id="groupsAccordion" prefHeight="600.0" prefWidth="828.0">
+        <Accordion fx:id="groupsAccordion" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <panes>
                 <TitledPane fx:id="groupsPane" text="Groupe">
                     <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0">

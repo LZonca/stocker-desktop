@@ -121,6 +121,27 @@ public class HttpManager {
         return response;
     }
 
+    public HttpResponse<String> getUserStocks() throws URISyntaxException, IOException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(new URI(baseUrl + "/user/stocks"))
+                .header("Authorization", "Bearer " + token)
+                .header("Accept-Language", locale)
+                .GET()
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        if (response.statusCode() != 201 && response.statusCode() != 200) {
+
+            TokenManager.removeToken();
+            loadResourceBundle();
+            Platform.runLater(() -> {
+                TokenExpiredDialog dialog = new TokenExpiredDialog(tokenLabels.getString("tokenExpiredTitle"), tokenLabels.getString("tokenExpiredHeader"), tokenLabels.getString("tokenExpiredContent"));
+                dialog.showAndWait();
+            });
+        }
+        return response;
+    }
+
     public HttpResponse<String> createGroup(String name) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(baseUrl + "/user/groups"))

@@ -7,6 +7,7 @@ public final class Produit {
     private String description;
     private Double prix;
     private String image;
+    private Pivot pivot;
     private Integer categorie_id;
 
     // getters and setters
@@ -64,5 +65,13 @@ public final class Produit {
 
     public void setCategorie_id(Integer categorie_id) {
         this.categorie_id = categorie_id;
+    }
+
+    public Pivot getPivot() {
+        return pivot;
+    }
+
+    public void setPivot(Pivot pivot) {
+        this.pivot = pivot;
     }
 }
