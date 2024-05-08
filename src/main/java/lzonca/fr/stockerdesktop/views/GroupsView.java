@@ -8,6 +8,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -318,6 +319,7 @@ public class GroupsView {
 
             Button addUserButton = new Button(labels.getString("addUser"));
             addUserButton.getStyleClass().add("default-button");
+
             addUserButton.setOnAction(_ -> addUserToGroup(groupe.getId(), emailField.getText())); // Pass the group ID to the event handler
             vbox.getChildren().add(addUserButton);
 
@@ -361,7 +363,8 @@ public class GroupsView {
     private TableColumn<User, Void> getUserVoidTableColumn(Groupe groupe) {
         if (groupe.getProprietaire().getId() == user.getId()) {
             TableColumn<User, Void> removeButtonColumn = new TableColumn<>("Actions");
-            removeButtonColumn.setStyle("-fx-font-size: 18px;"); // Set the font size to 18px
+            removeButtonColumn.setStyle("-fx-font-size: 15px;"); // Set the font size to 18px
+
             removeButtonColumn.setCellFactory(_ -> new TableCell<>() {
                 private final Button removeButton = new Button(labels.getString("removeUser"));
 
@@ -395,12 +398,13 @@ public class GroupsView {
                             setGraphic(null);
                         } else {
                             setGraphic(removeButton);
+                            setAlignment(Pos.CENTER); // Add this line to center the content
                         }
                     }
                 }
             });
             return removeButtonColumn;
-        }else{
+        } else {
             return null;
         }
     }
