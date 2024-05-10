@@ -47,7 +47,7 @@ public class User {
     }
 
     public void setGroupes(List<Groupe> groupes) {
-            this.groupes = groupes;
+        this.groupes = groupes;
     }
 
     public String toString() {

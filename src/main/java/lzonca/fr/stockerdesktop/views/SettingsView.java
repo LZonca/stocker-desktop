@@ -62,7 +62,7 @@ public class SettingsView {
         updateText(labels);
     }
 
-    public void updateText(ResourceBundle labels){
+    public void updateText(ResourceBundle labels) {
         frenchMenuItem.setText(labels.getString("french"));
         englishMenuItem.setText(labels.getString("english"));
 
@@ -117,8 +117,9 @@ public class SettingsView {
             currentMailLabel.setText(labels.getString("currentEmail") + ": " + user.getEmail());
         }
     }
+
     @FXML
-    private void logout(){
+    private void logout() {
         TokenManager.removeToken();
         Stage currentStage = (Stage) logoutButton.getScene().getWindow();
         currentStage.close();

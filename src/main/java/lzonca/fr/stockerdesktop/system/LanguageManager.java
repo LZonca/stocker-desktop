@@ -12,6 +12,6 @@ public class LanguageManager {
     }
 
     public static String getLanguage() {
-       return prefs.get(LANGUAGE, null);
+        return prefs.get(LANGUAGE, null);
     }
 }

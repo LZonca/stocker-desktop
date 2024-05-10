@@ -25,7 +25,6 @@ import lzonca.fr.stockerdesktop.system.LanguageManager;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
 import org.kordamp.ikonli.javafx.FontIcon;
 
-
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.http.HttpResponse;
@@ -55,7 +54,7 @@ public class StocksView {
     @FXML
     public void initialize() {
         refreshButton.setOnAction(_ -> refreshStocks());
-        createStockBtn.setOnAction(_-> openNewStockForm());
+        createStockBtn.setOnAction(_ -> openNewStockForm());
         loadResourceBundle();
         updateText(labels);
         refreshStocks();
@@ -168,8 +167,6 @@ public class StocksView {
         // Create a label for the stock name
 
 
-
-
         TableColumn<Produit, Produit> quantityChangeColumn = new TableColumn<>(labels.getString("productQuantity"));
         quantityChangeColumn.setMinWidth(200); // Set minimum width
         quantityChangeColumn.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
@@ -223,7 +220,7 @@ public class StocksView {
                             String quantityText = quantityInput.getText().isEmpty() ? quantityInput.getPromptText() : quantityInput.getText();
                             quantity = Integer.parseInt(quantityText);
                             HttpManager httpManager = new HttpManager();
-                            httpManager.updateProductQuantity(stock.getId() ,produit.getId(), quantity);
+                            httpManager.updateProductQuantity(stock.getId(), produit.getId(), quantity);
                             new ErrorDialog(labels.getString("success"), labels.getString("successTitleQuantiteUpdated"), labels.getString("successDescQuantiteUpdated"), FontAwesomeSolid.EXCLAMATION_CIRCLE).showAndWait();
                         } catch (NumberFormatException e) {
                             // Show an error message if the entered quantity is not a valid number
@@ -249,7 +246,6 @@ public class StocksView {
             private final Button removeButton = new Button();
             private final Button showButton = new Button();
             private final Button editButton = new Button();
-
 
 
             @Override
@@ -298,7 +294,6 @@ public class StocksView {
                 });
 
 
-
                 HBox buttons = new HBox(showButton, editButton, removeButton);
                 buttons.setSpacing(5);
                 buttons.setAlignment(Pos.CENTER); // Center the button
@@ -315,7 +310,6 @@ public class StocksView {
         /*table.getColumns().add(quantityColumn);*/
         table.getColumns().add(quantityChangeColumn);
         table.getColumns().add(removeColumn);
-
 
 
         // Add products to the table

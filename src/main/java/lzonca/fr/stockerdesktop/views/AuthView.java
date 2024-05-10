@@ -83,6 +83,7 @@ public class AuthView {
         emailLabel.setText(labels.getString("email"));
         passwordLabel.setText(labels.getString("password"));
     }
+
     private void loadResourceBundle() {
         String language = LanguageManager.getLanguage();
         Locale locale = language != null ? Locale.of(language) : Locale.getDefault();
@@ -112,7 +113,6 @@ public class AuthView {
             }
         });
     }
-
 
 
     public void login() {

@@ -63,7 +63,6 @@ public class MainView {
     }
 
 
-
     private void loadResourceBundle() {
         String language = LanguageManager.getLanguage();
         Locale locale = language != null ? Locale.of(language) : Locale.getDefault();

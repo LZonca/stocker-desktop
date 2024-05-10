@@ -6,7 +6,6 @@ import lzonca.fr.stockerdesktop.components.TokenExpiredDialog;
 import lzonca.fr.stockerdesktop.models.User;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -16,7 +15,6 @@ import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.util.Locale;
 import java.util.MissingResourceException;
-import java.util.Optional;
 import java.util.ResourceBundle;
 
 import static java.time.temporal.ChronoUnit.SECONDS;
@@ -34,6 +32,7 @@ public class HttpManager {
     public HttpManager() {
         client = HttpClient.newHttpClient();
     }
+
     private void loadResourceBundle() {
         String language = LanguageManager.getLanguage();
         Locale locale = language != null ? Locale.of(language) : Locale.getDefault();
@@ -46,7 +45,7 @@ public class HttpManager {
         }
     }
 
-    public HttpResponse<String> deleteStock(int stockId) throws IOException, InterruptedException, URISyntaxException{
+    public HttpResponse<String> deleteStock(int stockId) throws IOException, InterruptedException, URISyntaxException {
         try {
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(new URI(baseUrl + "/user/stocks/" + stockId))
@@ -59,7 +58,7 @@ public class HttpManager {
             System.out.println(response.statusCode() + response.body());
             if (response.statusCode() != 201 && response.statusCode() != 200 && response.statusCode() != 409 && response.statusCode() != 204) {
                 loadResourceBundle();
-                if (response.statusCode() == 401){
+                if (response.statusCode() == 401) {
                     TokenManager.removeToken();
                     Platform.runLater(() -> {
                         TokenExpiredDialog dialog = new TokenExpiredDialog(tokenLabels.getString("tokenExpiredTitle"), tokenLabels.getString("tokenExpiredHeader"), tokenLabels.getString("tokenExpiredContent"));
@@ -88,13 +87,13 @@ public class HttpManager {
         if (response.statusCode() != 201 && response.statusCode() != 200 && response.statusCode() != 409 && response.statusCode() != 403) {
 
             loadResourceBundle();
-            if (response.statusCode() == 403){
+            if (response.statusCode() == 403) {
                 Platform.runLater(() -> {
                     ErrorDialog dialog = new ErrorDialog(tokenLabels.getString("error"), tokenLabels.getString("cannotRemoveUserTitle"), tokenLabels.getString("cannotRemoveUserContent"), FontAwesomeSolid.EXCLAMATION_TRIANGLE);
                     dialog.showAndWait();
                 });
             }
-            if (response.statusCode() == 401){
+            if (response.statusCode() == 401) {
                 TokenManager.removeToken();
                 Platform.runLater(() -> {
                     TokenExpiredDialog dialog = new TokenExpiredDialog(tokenLabels.getString("tokenExpiredTitle"), tokenLabels.getString("tokenExpiredHeader"), tokenLabels.getString("tokenExpiredContent"));
@@ -117,7 +116,7 @@ public class HttpManager {
         if (response.statusCode() != 201 && response.statusCode() != 200 && response.statusCode() != 409 && response.statusCode() != 204) {
 
             loadResourceBundle();
-            if (response.statusCode() == 401){
+            if (response.statusCode() == 401) {
                 TokenManager.removeToken();
                 Platform.runLater(() -> {
                     TokenExpiredDialog dialog = new TokenExpiredDialog(tokenLabels.getString("tokenExpiredTitle"), tokenLabels.getString("tokenExpiredHeader"), tokenLabels.getString("tokenExpiredContent"));
@@ -139,7 +138,7 @@ public class HttpManager {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         if (response.statusCode() != 201 && response.statusCode() != 200 && response.statusCode() != 409 && response.statusCode() != 204) {
             loadResourceBundle();
-            if (response.statusCode() == 401){
+            if (response.statusCode() == 401) {
                 TokenManager.removeToken();
                 Platform.runLater(() -> {
                     TokenExpiredDialog dialog = new TokenExpiredDialog(tokenLabels.getString("tokenExpiredTitle"), tokenLabels.getString("tokenExpiredHeader"), tokenLabels.getString("tokenExpiredContent"));
@@ -162,7 +161,7 @@ public class HttpManager {
         if (response.statusCode() != 201 && response.statusCode() != 200 && response.statusCode() != 409 && response.statusCode() != 204) {
             System.out.println(response.body());
             loadResourceBundle();
-            if (response.statusCode() == 401){
+            if (response.statusCode() == 401) {
                 TokenManager.removeToken();
                 Platform.runLater(() -> {
                     TokenExpiredDialog dialog = new TokenExpiredDialog(tokenLabels.getString("tokenExpiredTitle"), tokenLabels.getString("tokenExpiredHeader"), tokenLabels.getString("tokenExpiredContent"));
@@ -205,7 +204,7 @@ public class HttpManager {
         System.out.println(response.body());
         if (response.statusCode() != 201 && response.statusCode() != 200 && response.statusCode() != 409) {
             loadResourceBundle();
-            if (response.statusCode() == 401){
+            if (response.statusCode() == 401) {
                 TokenManager.removeToken();
                 Platform.runLater(() -> {
                     TokenExpiredDialog dialog = new TokenExpiredDialog(tokenLabels.getString("tokenExpiredTitle"), tokenLabels.getString("tokenExpiredHeader"), tokenLabels.getString("tokenExpiredContent"));
@@ -228,7 +227,7 @@ public class HttpManager {
         if (response.statusCode() != 201 && response.statusCode() != 200 && response.statusCode() != 409 && response.statusCode() != 204) {
             System.out.println(response.statusCode());
             loadResourceBundle();
-            if (response.statusCode() == 401){
+            if (response.statusCode() == 401) {
                 TokenManager.removeToken();
                 Platform.runLater(() -> {
                     TokenExpiredDialog dialog = new TokenExpiredDialog(tokenLabels.getString("tokenExpiredTitle"), tokenLabels.getString("tokenExpiredHeader"), tokenLabels.getString("tokenExpiredContent"));
@@ -272,7 +271,7 @@ public class HttpManager {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         if (response.statusCode() != 201 && response.statusCode() != 200 && response.statusCode() != 409) {
             loadResourceBundle();
-            if (response.statusCode() == 401){
+            if (response.statusCode() == 401) {
                 TokenManager.removeToken();
                 Platform.runLater(() -> {
                     TokenExpiredDialog dialog = new TokenExpiredDialog(tokenLabels.getString("tokenExpiredTitle"), tokenLabels.getString("tokenExpiredHeader"), tokenLabels.getString("tokenExpiredContent"));
@@ -296,7 +295,7 @@ public class HttpManager {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         if (response.statusCode() != 201 && response.statusCode() != 200 && response.statusCode() != 409) {
             loadResourceBundle();
-            if (response.statusCode() == 401){
+            if (response.statusCode() == 401) {
                 TokenManager.removeToken();
                 Platform.runLater(() -> {
                     TokenExpiredDialog dialog = new TokenExpiredDialog(tokenLabels.getString("tokenExpiredTitle"), tokenLabels.getString("tokenExpiredHeader"), tokenLabels.getString("tokenExpiredContent"));
@@ -343,7 +342,7 @@ public class HttpManager {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         if (response.statusCode() != 201 && response.statusCode() != 200 && response.statusCode() != 409) {
             loadResourceBundle();
-            if (response.statusCode() == 401){
+            if (response.statusCode() == 401) {
                 TokenManager.removeToken();
                 Platform.runLater(() -> {
                     TokenExpiredDialog dialog = new TokenExpiredDialog(tokenLabels.getString("tokenExpiredTitle"), tokenLabels.getString("tokenExpiredHeader"), tokenLabels.getString("tokenExpiredContent"));
@@ -387,7 +386,7 @@ public class HttpManager {
                 .build();
         try (HttpClient client = HttpClient.newHttpClient()) {
             return client.send(request, HttpResponse.BodyHandlers.ofString());
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;

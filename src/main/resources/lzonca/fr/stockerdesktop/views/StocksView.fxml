@@ -2,45 +2,46 @@
 
 <?import com.gluonhq.charm.glisten.control.CharmListView?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Accordion?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TitledPane?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
-
-<?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.control.ProgressIndicator?>
-<AnchorPane prefHeight="600.0" prefWidth="828.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="lzonca.fr.stockerdesktop.views.StocksView">
-    <VBox alignment="TOP_CENTER" layoutY="7.0" prefHeight="593.0" prefWidth="828.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="7.0">
+<AnchorPane prefHeight="600.0" prefWidth="828.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="lzonca.fr.stockerdesktop.views.StocksView">
+    <VBox alignment="TOP_CENTER" layoutY="7.0" prefHeight="593.0" prefWidth="828.0" spacing="10.0"
+          AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+          AnchorPane.topAnchor="7.0">
         <padding>
-            <Insets top="30.0" left="25.0" right="200.0" />
+            <Insets top="30.0" left="25.0" right="200.0"/>
         </padding>
         <Button fx:id="refreshButton" styleClass="default-button">
             <graphic>
                 <StackPane fx:id="buttonStackPane">
-                    <Label fx:id="buttonLabel" text="Actualiser" />
-                    <ProgressIndicator fx:id="refreshIndicator" prefHeight="15" prefWidth="15" style="-fx-progress-color: black;" visible="false" />
+                    <Label fx:id="buttonLabel" text="Actualiser"/>
+                    <ProgressIndicator fx:id="refreshIndicator" prefHeight="15" prefWidth="15"
+                                       style="-fx-progress-color: black;" visible="false"/>
                 </StackPane>
             </graphic>
         </Button>
         <Label text="Vos stocks">
             <font>
-                <Font size="30.0" />
+                <Font size="30.0"/>
             </font>
         </Label>
-      <Button fx:id="createStockBtn" mnemonicParsing="false" prefHeight="34.0" prefWidth="216.0" styleClass="main-button" stylesheets="@../css/styles.css" text="Create new stock" />
+        <Button fx:id="createStockBtn" mnemonicParsing="false" prefHeight="34.0" prefWidth="216.0"
+                styleClass="main-button" stylesheets="@../css/styles.css" text="Create new stock"/>
         <Accordion fx:id="stocksAccordion">
             <panes>
-                <TitledPane fx:id="userStocksPane" animated="false" prefHeight="40.0" prefWidth="828.0" stylesheets="@../css/styles.css" text="Vos stocks">
+                <TitledPane fx:id="userStocksPane" animated="false" prefHeight="40.0" prefWidth="828.0"
+                            stylesheets="@../css/styles.css" text="Vos stocks">
                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="652.0" prefWidth="826.0">
-                        <CharmListView layoutX="-1.0" layoutY="-4.0" prefHeight="465.0" prefWidth="828.0" AnchorPane.bottomAnchor="-4.0" AnchorPane.leftAnchor="-11.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="-4.0" />
+                        <CharmListView layoutX="-1.0" layoutY="-4.0" prefHeight="465.0" prefWidth="828.0"
+                                       AnchorPane.bottomAnchor="-4.0" AnchorPane.leftAnchor="-11.0"
+                                       AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="-4.0"/>
                     </AnchorPane>
                 </TitledPane>
                 <TitledPane animated="false" text="Stocks de vos groupes">
                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="489.0" prefWidth="826.0">
-                        <CharmListView prefHeight="465.0" prefWidth="828.0" />
+                        <CharmListView prefHeight="465.0" prefWidth="828.0"/>
                     </AnchorPane>
                 </TitledPane>
             </panes>

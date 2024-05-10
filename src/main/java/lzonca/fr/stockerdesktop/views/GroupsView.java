@@ -21,8 +21,6 @@ import lzonca.fr.stockerdesktop.models.Groupe;
 import lzonca.fr.stockerdesktop.models.User;
 import lzonca.fr.stockerdesktop.system.HttpManager;
 import lzonca.fr.stockerdesktop.system.LanguageManager;
-import org.controlsfx.glyphfont.FontAwesome;
-import org.jetbrains.annotations.NotNull;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
 import org.kordamp.ikonli.javafx.FontIcon;
 
@@ -68,7 +66,7 @@ public class GroupsView {
     @FXML
     public void initialize() {
         refreshButton.setOnAction(_ -> refreshGroups());
-        createGroupBtn.setOnAction(_-> openNewGroupForm());
+        createGroupBtn.setOnAction(_ -> openNewGroupForm());
         loadResourceBundle();
         updateText(labels);
         refreshGroups();
@@ -107,6 +105,7 @@ public class GroupsView {
             e.printStackTrace();
         }
     }
+
     public GroupsView() {
         this.httpManager = new HttpManager();
     }
@@ -195,7 +194,7 @@ public class GroupsView {
 
                 Optional<ButtonType> result = alert.showAndWait();
 
-                if (result.isPresent() && result.get() == ButtonType.OK){
+                if (result.isPresent() && result.get() == ButtonType.OK) {
                     HttpManager httpmanager = new HttpManager();
                     try {
                         httpmanager.deleteGroup(groupe.getId());
@@ -206,31 +205,31 @@ public class GroupsView {
                 }
             });
             titleBox.getChildren().add(deleteButton);
-        }else{
-                // If it does, create a leave button and add it to the HBox
-                Button leaveButton = new Button(labels.getString("leaveGroup"));
-                leaveButton.getStyleClass().add("default-button");
-                FontIcon trashIcon = new FontIcon("fas-sign-out-alt");
-                leaveButton.setGraphic(trashIcon);
-                leaveButton.setOnAction(_ -> {
-                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                    alert.setTitle(labels.getString("pleaseConfirm"));
-                    alert.setHeaderText(labels.getString("leaveGroup") + groupe.getNom());
-                    alert.setContentText(labels.getString("leaveGroupConfirmation"));
+        } else {
+            // If it does, create a leave button and add it to the HBox
+            Button leaveButton = new Button(labels.getString("leaveGroup"));
+            leaveButton.getStyleClass().add("default-button");
+            FontIcon trashIcon = new FontIcon("fas-sign-out-alt");
+            leaveButton.setGraphic(trashIcon);
+            leaveButton.setOnAction(_ -> {
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle(labels.getString("pleaseConfirm"));
+                alert.setHeaderText(labels.getString("leaveGroup") + groupe.getNom());
+                alert.setContentText(labels.getString("leaveGroupConfirmation"));
 
-                    Optional<ButtonType> result = alert.showAndWait();
+                Optional<ButtonType> result = alert.showAndWait();
 
-                    if (result.isPresent() && result.get() == ButtonType.OK){
-                        HttpManager httpmanager = new HttpManager();
-                        try {
-                            httpmanager.leaveGroup(groupe.getId());
-                        } catch (IOException | InterruptedException | URISyntaxException e) {
-                            throw new RuntimeException(e);
-                        }
-                        groupsAccordion.getPanes().remove(groupPane);
+                if (result.isPresent() && result.get() == ButtonType.OK) {
+                    HttpManager httpmanager = new HttpManager();
+                    try {
+                        httpmanager.leaveGroup(groupe.getId());
+                    } catch (IOException | InterruptedException | URISyntaxException e) {
+                        throw new RuntimeException(e);
                     }
-                });
-                titleBox.getChildren().add(leaveButton);
+                    groupsAccordion.getPanes().remove(groupPane);
+                }
+            });
+            titleBox.getChildren().add(leaveButton);
         }
 
         // Set the HBox as the graphic of the TitledPane and set the text to null
@@ -311,7 +310,7 @@ public class GroupsView {
         membersTable.getColumns().add(nameColumn);
         membersTable.getColumns().add(emailColumn);
         if (user.getId() == groupe.getProprietaire().getId()) {
-            if (removeButtonColumn != null){
+            if (removeButtonColumn != null) {
                 membersTable.getColumns().add(removeButtonColumn);
                 removeButtonColumn.prefWidthProperty().bind(membersTable.widthProperty().multiply(0.2)); // Set the width to 50% of the table width
                 removeButtonColumn.setReorderable(false); // Add this line
@@ -320,7 +319,7 @@ public class GroupsView {
 
         TextField emailField = new TextField();
         emailField.setPromptText(labels.getString("enterEmail"));
-        if(groupe.getProprietaire().getId() == user.getId()) {
+        if (groupe.getProprietaire().getId() == user.getId()) {
 
             Button addUserButton = new Button(labels.getString("addUser"));
             addUserButton.getStyleClass().add("default-button");
@@ -416,7 +415,7 @@ public class GroupsView {
         }
     }
 
-    private void removeUserFromGroup(int groupId, User user ) {
+    private void removeUserFromGroup(int groupId, User user) {
         try {
             System.out.println(user);
             HttpResponse<String> response = httpManager.removeUserFromGroup(groupId, user);
@@ -429,7 +428,8 @@ public class GroupsView {
                 ObjectMapper mapper = new ObjectMapper();
                 Map<String, List<String>> responseMap;
                 try {
-                    responseMap = mapper.readValue(response.body(), new TypeReference<Map<String, List<String>>>(){});
+                    responseMap = mapper.readValue(response.body(), new TypeReference<Map<String, List<String>>>() {
+                    });
                 } catch (IOException e) {
                     // If the response body cannot be parsed, use a default error message
                     responseMap = Map.of("message", List.of("An error occurred while removing the user from the group."));
@@ -460,7 +460,8 @@ public class GroupsView {
                 ObjectMapper mapper = new ObjectMapper();
                 Map<String, List<String>> responseMap;
                 try {
-                    responseMap = mapper.readValue(response.body(), new TypeReference<Map<String, List<String>>>(){});
+                    responseMap = mapper.readValue(response.body(), new TypeReference<Map<String, List<String>>>() {
+                    });
                 } catch (IOException e) {
                     // If the response body cannot be parsed, use a default error message
                     responseMap = Map.of("email", List.of("An error occurred while adding the user to the group."));

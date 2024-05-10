@@ -6,30 +6,34 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="lzonca.fr.stockerdesktop.views.CreateGroupForm">
-   <VBox alignment="TOP_CENTER" prefHeight="400.0" prefWidth="600.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-      <padding>
-         <Insets left="150.0" right="150.0" top="30.0" />
-      </padding>
-      <Label fx:id="TitleLabel" text="Créer un nouveau groupe">
-         <font>
-            <Font size="24.0" />
-         </font>
-      </Label>
-      <VBox alignment="TOP_CENTER" prefHeight="330.0" prefWidth="600.0" spacing="40.0">
-         <padding>
-            <Insets top="50.0" />
-         </padding>
-         <Label fx:id="groupNameLabel" text="Nom du groupe">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="lzonca.fr.stockerdesktop.views.CreateGroupForm">
+    <VBox alignment="TOP_CENTER" prefHeight="400.0" prefWidth="600.0" spacing="10.0" AnchorPane.bottomAnchor="0.0"
+          AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <padding>
+            <Insets left="150.0" right="150.0" top="30.0"/>
+        </padding>
+        <Label fx:id="TitleLabel" text="Créer un nouveau groupe">
             <font>
-               <Font size="14.0" />
+                <Font size="24.0"/>
             </font>
-         </Label>
-         <TextField fx:id="nameField" />
-         <Button fx:id="createGroupButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="338.0" styleClass="default-button" stylesheets="@../../css/styles.css" text="Créer" wrapText="true">
-            <font>
-               <Font size="19.0" />
-            </font></Button>
-      </VBox>
-   </VBox>
+        </Label>
+        <VBox alignment="TOP_CENTER" prefHeight="330.0" prefWidth="600.0" spacing="40.0">
+            <padding>
+                <Insets top="50.0"/>
+            </padding>
+            <Label fx:id="groupNameLabel" text="Nom du groupe">
+                <font>
+                    <Font size="14.0"/>
+                </font>
+            </Label>
+            <TextField fx:id="nameField"/>
+            <Button fx:id="createGroupButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="338.0"
+                    styleClass="default-button" stylesheets="@../../css/styles.css" text="Créer" wrapText="true">
+                <font>
+                    <Font size="19.0"/>
+                </font>
+            </Button>
+        </VBox>
+    </VBox>
 </AnchorPane>

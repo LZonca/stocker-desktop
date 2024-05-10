@@ -17,6 +17,7 @@ public class TokenManager {
     public static boolean hasToken() {
         return getToken() != null;
     }
+
     public static void removeToken() {
         prefs.remove(TOKEN_KEY);
     }

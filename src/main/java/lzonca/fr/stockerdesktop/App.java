@@ -21,6 +21,7 @@ import java.util.Objects;
 public class App extends Application {
     double x, y;
     Image logo;
+
     @Override
     public void start(Stage stage) throws IOException, URISyntaxException {
         System.setProperty("javafx.platform", "desktop");
@@ -74,7 +75,6 @@ public class App extends Application {
         stage.setScene(scene);
         stage.show();
     }
-
 
 
     public static void main(String[] args) {
