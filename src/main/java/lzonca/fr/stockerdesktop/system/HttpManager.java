@@ -6,6 +6,7 @@ import lzonca.fr.stockerdesktop.components.TokenExpiredDialog;
 import lzonca.fr.stockerdesktop.models.User;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -15,13 +16,14 @@ import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.util.Locale;
 import java.util.MissingResourceException;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import static java.time.temporal.ChronoUnit.SECONDS;
 
 public class HttpManager {
-    private final String baseUrl = "https://stocker.lzonca.fr/api";
-    /*private final String baseUrl = "http://localhost:8000/api";*/
+    /*private final String baseUrl = "https://stocker.lzonca.fr/api";*/
+    private final String baseUrl = "http://localhost:8000/api";
     private final String token = TokenManager.getToken();
 
     private ResourceBundle tokenLabels;
@@ -42,6 +44,34 @@ public class HttpManager {
         } catch (MissingResourceException e) {
             System.out.println("Failed to load resource bundle: " + e.getMessage());
         }
+    }
+
+    public HttpResponse<String> deleteStock(int stockId) throws IOException, InterruptedException, URISyntaxException{
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI(baseUrl + "/user/stocks/" + stockId))
+                    .header("Authorization", "Bearer " + token)
+                    .header("Accept-Language", locale)
+                    .DELETE()
+                    .build();
+
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            System.out.println(response.statusCode() + response.body());
+            if (response.statusCode() != 201 && response.statusCode() != 200 && response.statusCode() != 409 && response.statusCode() != 204) {
+                loadResourceBundle();
+                if (response.statusCode() == 401){
+                    TokenManager.removeToken();
+                    Platform.runLater(() -> {
+                        TokenExpiredDialog dialog = new TokenExpiredDialog(tokenLabels.getString("tokenExpiredTitle"), tokenLabels.getString("tokenExpiredHeader"), tokenLabels.getString("tokenExpiredContent"));
+                        dialog.showAndWait();
+                    });
+                }
+            }
+            return response;
+        } catch (IOException | InterruptedException | URISyntaxException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public HttpResponse<String> removeUserFromGroup(int groupId, User user) throws IOException, InterruptedException, URISyntaxException {
@@ -86,6 +116,94 @@ public class HttpManager {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         if (response.statusCode() != 201 && response.statusCode() != 200 && response.statusCode() != 409 && response.statusCode() != 204) {
 
+            loadResourceBundle();
+            if (response.statusCode() == 401){
+                TokenManager.removeToken();
+                Platform.runLater(() -> {
+                    TokenExpiredDialog dialog = new TokenExpiredDialog(tokenLabels.getString("tokenExpiredTitle"), tokenLabels.getString("tokenExpiredHeader"), tokenLabels.getString("tokenExpiredContent"));
+                    dialog.showAndWait();
+                });
+            }
+        }
+        return response;
+    }
+
+    public HttpResponse<String> updateProductQuantity(int stockId, int produitId, int quantite) throws IOException, InterruptedException, URISyntaxException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(new URI(baseUrl + "/user/stocks/" + stockId + "/produits/" + produitId))
+                .header("Authorization", "Bearer " + token)
+                .header("Content-Type", "application/json")
+                .header("Accept-Language", locale)
+                .method("PATCH", HttpRequest.BodyPublishers.ofString("{\"quantite\":" + quantite + "}"))
+                .build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        if (response.statusCode() != 201 && response.statusCode() != 200 && response.statusCode() != 409 && response.statusCode() != 204) {
+            loadResourceBundle();
+            if (response.statusCode() == 401){
+                TokenManager.removeToken();
+                Platform.runLater(() -> {
+                    TokenExpiredDialog dialog = new TokenExpiredDialog(tokenLabels.getString("tokenExpiredTitle"), tokenLabels.getString("tokenExpiredHeader"), tokenLabels.getString("tokenExpiredContent"));
+                    dialog.showAndWait();
+                });
+            }
+        }
+        return response;
+    }
+
+    public HttpResponse<String> removeProduct(int stockId, int productId) throws IOException, InterruptedException, URISyntaxException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(new URI(baseUrl + "/user/stocks/" + stockId + "/produits/" + productId))
+                .header("Authorization", "Bearer " + token)
+                .header("Accept-Language", locale)
+                .DELETE()
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        if (response.statusCode() != 201 && response.statusCode() != 200 && response.statusCode() != 409 && response.statusCode() != 204) {
+            System.out.println(response.body());
+            loadResourceBundle();
+            if (response.statusCode() == 401){
+                TokenManager.removeToken();
+                Platform.runLater(() -> {
+                    TokenExpiredDialog dialog = new TokenExpiredDialog(tokenLabels.getString("tokenExpiredTitle"), tokenLabels.getString("tokenExpiredHeader"), tokenLabels.getString("tokenExpiredContent"));
+                    dialog.showAndWait();
+                });
+            }
+        }
+        return response;
+    }
+
+    public HttpResponse<String> createProduit(int stockId, String productName, String productCode, String productDesc/*,File productImage*/) throws IOException, InterruptedException, URISyntaxException {
+        /*var multipartBuilder = new MultipartBodyPublisher();*/
+
+        // Add JSON data
+        String jsonData = "{\"nom\":\"" + productName + "\"";
+        if (productCode != null && !productCode.isEmpty()) {
+            jsonData += ",\"code\":\"" + productCode + "\"";
+        }
+        if (productDesc != null && !productDesc.isEmpty()) {
+            jsonData += ",\"description\":\"" + productDesc + "\"";
+        }
+        jsonData += "}";
+        System.out.println(jsonData);
+        /*multipartBuilder.addPart("data", jsonData, "application/json");
+
+        // Add image file
+        if (productImage != null) {
+            multipartBuilder.addPart("image", productImage.toPath(), "image/jpeg");
+        }*/
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(new URI(baseUrl + "/user/stocks/" + stockId + "/produits"))
+                .header("Authorization", "Bearer " + token)
+                .header("Content-Type", "application/json")
+                .header("Accept-Language", locale)
+                .POST(HttpRequest.BodyPublishers.ofString(jsonData)/*multipartBuilder.build()*/)
+                .build();
+        System.out.println(request);
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        System.out.println(response.body());
+        if (response.statusCode() != 201 && response.statusCode() != 200 && response.statusCode() != 409) {
             loadResourceBundle();
             if (response.statusCode() == 401){
                 TokenManager.removeToken();

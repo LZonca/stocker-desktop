@@ -31,6 +31,9 @@
                   <Font size="29.0" />
                </font>
             </Label>
+            <padding>
+               <Insets left="50.0" />
+            </padding>
          </HBox>
       </top>
       <left>

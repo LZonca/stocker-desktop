@@ -20,3 +20,10 @@
     -fx-border-color: black;
 }
 
+.titled-pane {
+    -fx-background-color: #92AA83;
+}
+
+.titled-pane:hover{
+    -fx-background-color: #A9C4A6;
+}

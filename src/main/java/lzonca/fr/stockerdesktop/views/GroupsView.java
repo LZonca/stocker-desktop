@@ -24,6 +24,7 @@ import lzonca.fr.stockerdesktop.system.LanguageManager;
 import org.controlsfx.glyphfont.FontAwesome;
 import org.jetbrains.annotations.NotNull;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
+import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -181,9 +182,11 @@ public class GroupsView {
         // Check if the proprietaire_id of the group matches the id of the currently authenticated user
         if (groupe.getProprietaire().getId() == user.getId()) {
             // If it does, create a delete button and add it to the HBox
-            Button deleteButton = new Button(labels.getString("delete"));
+            Button deleteButton = new Button();
             /*deleteButton.setGraphic(FontAwesomeSolid.TRASH);*/
             deleteButton.getStyleClass().add("default-button");
+            FontIcon trashIcon = new FontIcon("fas-trash");
+            deleteButton.setGraphic(trashIcon);
             deleteButton.setOnAction(_ -> {
                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                 alert.setTitle(labels.getString("pleaseConfirm"));
@@ -207,6 +210,8 @@ public class GroupsView {
                 // If it does, create a leave button and add it to the HBox
                 Button leaveButton = new Button(labels.getString("leaveGroup"));
                 leaveButton.getStyleClass().add("default-button");
+                FontIcon trashIcon = new FontIcon("fas-sign-out-alt");
+                leaveButton.setGraphic(trashIcon);
                 leaveButton.setOnAction(_ -> {
                     Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                     alert.setTitle(labels.getString("pleaseConfirm"));
@@ -364,12 +369,14 @@ public class GroupsView {
         if (groupe.getProprietaire().getId() == user.getId()) {
             TableColumn<User, Void> removeButtonColumn = new TableColumn<>("Actions");
             removeButtonColumn.setStyle("-fx-font-size: 15px;"); // Set the font size to 18px
-
+            removeButtonColumn.setSortable(false); // Add this line
             removeButtonColumn.setCellFactory(_ -> new TableCell<>() {
                 private final Button removeButton = new Button(labels.getString("removeUser"));
 
                 {
                     removeButton.getStyleClass().add("default-button");
+                    FontIcon trashIcon = new FontIcon("fas-user-slash");
+                    removeButton.setGraphic(trashIcon);
                     removeButton.setOnAction(_ -> {
                         User user = getTableView().getItems().get(getIndex());
 

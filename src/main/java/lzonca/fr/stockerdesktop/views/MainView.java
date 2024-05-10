@@ -60,8 +60,6 @@ public class MainView {
         }
         loadResourceBundle();
         updateText(labels);
-        System.out.println("MainView initialize method called");
-        System.out.println("User: " + this.user);
     }
 
 
@@ -94,7 +92,6 @@ public class MainView {
             HomeView homeViewController = loader.getController();
             homeViewController.setUser(this.user); // Pass the user details to the HomeView
             subScene.setRoot(homeView);
-            System.out.println("HomeView loaded successfully");
         } catch (IOException e) {
             e.printStackTrace();
         }
