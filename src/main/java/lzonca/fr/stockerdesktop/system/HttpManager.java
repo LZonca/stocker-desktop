@@ -86,7 +86,16 @@ public class HttpManager {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         if (response.statusCode() != 201 && response.statusCode() != 200 && response.statusCode() != 409 && response.statusCode() != 403) {
 
+
             loadResourceBundle();
+
+            if (response.statusCode() == 500) {
+                Platform.runLater(() -> {
+                    ErrorDialog dialog = new ErrorDialog(tokenLabels.getString("error"), tokenLabels.getString("server_error"), tokenLabels.getString("server_unavailable"), FontAwesomeSolid.EXCLAMATION_TRIANGLE);
+                    dialog.showAndWait();
+                });
+            }
+
             if (response.statusCode() == 403) {
                 Platform.runLater(() -> {
                     ErrorDialog dialog = new ErrorDialog(tokenLabels.getString("error"), tokenLabels.getString("cannotRemoveUserTitle"), tokenLabels.getString("cannotRemoveUserContent"), FontAwesomeSolid.EXCLAMATION_TRIANGLE);
@@ -116,6 +125,45 @@ public class HttpManager {
         if (response.statusCode() != 201 && response.statusCode() != 200 && response.statusCode() != 409 && response.statusCode() != 204) {
 
             loadResourceBundle();
+
+            if (response.statusCode() == 500) {
+                Platform.runLater(() -> {
+                    ErrorDialog dialog = new ErrorDialog(tokenLabels.getString("error"), tokenLabels.getString("server_error"), tokenLabels.getString("server_unavailable"), FontAwesomeSolid.EXCLAMATION_TRIANGLE);
+                    dialog.showAndWait();
+                });
+            }
+
+            if (response.statusCode() == 401) {
+                TokenManager.removeToken();
+                Platform.runLater(() -> {
+                    TokenExpiredDialog dialog = new TokenExpiredDialog(tokenLabels.getString("tokenExpiredTitle"), tokenLabels.getString("tokenExpiredHeader"), tokenLabels.getString("tokenExpiredContent"));
+                    dialog.showAndWait();
+                });
+            }
+        }
+        return response;
+    }
+
+    public HttpResponse<String> updateProduit(int stockId, int productId, String productName, String productCode, String productDesc) throws IOException, InterruptedException, URISyntaxException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(new URI(baseUrl + "/user/stocks/" + stockId + "/produits/" + productId))
+                .header("Authorization", "Bearer " + token)
+                .header("Content-Type", "application/json")
+                .header("Accept-Language", locale)
+                .method("PATCH", HttpRequest.BodyPublishers.ofString("{\"nom\":\"" + productName + "\",\"code\":\"" + productCode + "\",\"description\":\"" + productDesc + "\"}"))
+                .build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        System.out.println(response.body());
+        if (response.statusCode() != 201 && response.statusCode() != 200 && response.statusCode() != 409 && response.statusCode() != 204) {
+            loadResourceBundle();
+
+            if (response.statusCode() == 500) {
+                Platform.runLater(() -> {
+                    ErrorDialog dialog = new ErrorDialog(tokenLabels.getString("error"), tokenLabels.getString("server_error"), tokenLabels.getString("server_unavailable"), FontAwesomeSolid.EXCLAMATION_TRIANGLE);
+                    dialog.showAndWait();
+                });
+            }
+
             if (response.statusCode() == 401) {
                 TokenManager.removeToken();
                 Platform.runLater(() -> {
@@ -138,6 +186,14 @@ public class HttpManager {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         if (response.statusCode() != 201 && response.statusCode() != 200 && response.statusCode() != 409 && response.statusCode() != 204) {
             loadResourceBundle();
+
+            if (response.statusCode() == 500) {
+                Platform.runLater(() -> {
+                    ErrorDialog dialog = new ErrorDialog(tokenLabels.getString("error"), tokenLabels.getString("server_error"), tokenLabels.getString("server_unavailable"), FontAwesomeSolid.EXCLAMATION_TRIANGLE);
+                    dialog.showAndWait();
+                });
+            }
+
             if (response.statusCode() == 401) {
                 TokenManager.removeToken();
                 Platform.runLater(() -> {
@@ -161,6 +217,14 @@ public class HttpManager {
         if (response.statusCode() != 201 && response.statusCode() != 200 && response.statusCode() != 409 && response.statusCode() != 204) {
             System.out.println(response.body());
             loadResourceBundle();
+
+            if (response.statusCode() == 500) {
+                Platform.runLater(() -> {
+                    ErrorDialog dialog = new ErrorDialog(tokenLabels.getString("error"), tokenLabels.getString("server_error"), tokenLabels.getString("server_unavailable"), FontAwesomeSolid.EXCLAMATION_TRIANGLE);
+                    dialog.showAndWait();
+                });
+            }
+
             if (response.statusCode() == 401) {
                 TokenManager.removeToken();
                 Platform.runLater(() -> {
@@ -204,6 +268,13 @@ public class HttpManager {
         System.out.println(response.body());
         if (response.statusCode() != 201 && response.statusCode() != 200 && response.statusCode() != 409) {
             loadResourceBundle();
+            if (response.statusCode() == 500) {
+                Platform.runLater(() -> {
+                    ErrorDialog dialog = new ErrorDialog(tokenLabels.getString("error"), tokenLabels.getString("server_error"), tokenLabels.getString("server_unavailable"), FontAwesomeSolid.EXCLAMATION_TRIANGLE);
+                    dialog.showAndWait();
+                });
+            }
+
             if (response.statusCode() == 401) {
                 TokenManager.removeToken();
                 Platform.runLater(() -> {
@@ -227,6 +298,13 @@ public class HttpManager {
         if (response.statusCode() != 201 && response.statusCode() != 200 && response.statusCode() != 409 && response.statusCode() != 204) {
             System.out.println(response.statusCode());
             loadResourceBundle();
+            if (response.statusCode() == 500) {
+                Platform.runLater(() -> {
+                    ErrorDialog dialog = new ErrorDialog(tokenLabels.getString("error"), tokenLabels.getString("server_error"), tokenLabels.getString("server_unavailable"), FontAwesomeSolid.EXCLAMATION_TRIANGLE);
+                    dialog.showAndWait();
+                });
+            }
+
             if (response.statusCode() == 401) {
                 TokenManager.removeToken();
                 Platform.runLater(() -> {
@@ -249,12 +327,22 @@ public class HttpManager {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         if (response.statusCode() != 201 && response.statusCode() != 200) {
 
-            TokenManager.removeToken();
             loadResourceBundle();
-            Platform.runLater(() -> {
-                TokenExpiredDialog dialog = new TokenExpiredDialog(tokenLabels.getString("tokenExpiredTitle"), tokenLabels.getString("tokenExpiredHeader"), tokenLabels.getString("tokenExpiredContent"));
-                dialog.showAndWait();
-            });
+
+            if (response.statusCode() == 500) {
+                Platform.runLater(() -> {
+                    ErrorDialog dialog = new ErrorDialog(tokenLabels.getString("error"), tokenLabels.getString("server_error"), tokenLabels.getString("server_unavailable"), FontAwesomeSolid.EXCLAMATION_TRIANGLE);
+                    dialog.showAndWait();
+                });
+            }
+
+            if (response.statusCode() == 401) {
+                TokenManager.removeToken();
+                Platform.runLater(() -> {
+                    TokenExpiredDialog dialog = new TokenExpiredDialog(tokenLabels.getString("tokenExpiredTitle"), tokenLabels.getString("tokenExpiredHeader"), tokenLabels.getString("tokenExpiredContent"));
+                    dialog.showAndWait();
+                });
+            }
         }
         return response;
     }
@@ -271,6 +359,14 @@ public class HttpManager {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         if (response.statusCode() != 201 && response.statusCode() != 200 && response.statusCode() != 409) {
             loadResourceBundle();
+
+            if (response.statusCode() == 500) {
+                Platform.runLater(() -> {
+                    ErrorDialog dialog = new ErrorDialog(tokenLabels.getString("error"), tokenLabels.getString("server_error"), tokenLabels.getString("server_unavailable"), FontAwesomeSolid.EXCLAMATION_TRIANGLE);
+                    dialog.showAndWait();
+                });
+            }
+
             if (response.statusCode() == 401) {
                 TokenManager.removeToken();
                 Platform.runLater(() -> {
@@ -295,6 +391,14 @@ public class HttpManager {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         if (response.statusCode() != 201 && response.statusCode() != 200 && response.statusCode() != 409) {
             loadResourceBundle();
+
+            if (response.statusCode() == 500) {
+                Platform.runLater(() -> {
+                    ErrorDialog dialog = new ErrorDialog(tokenLabels.getString("error"), tokenLabels.getString("server_error"), tokenLabels.getString("server_unavailable"), FontAwesomeSolid.EXCLAMATION_TRIANGLE);
+                    dialog.showAndWait();
+                });
+            }
+
             if (response.statusCode() == 401) {
                 TokenManager.removeToken();
                 Platform.runLater(() -> {
@@ -319,6 +423,13 @@ public class HttpManager {
         System.out.println("Status code: " + response.statusCode());
         System.out.println("Headers: " + response.headers());
 
+        if (response.statusCode() == 500) {
+            Platform.runLater(() -> {
+                ErrorDialog dialog = new ErrorDialog(tokenLabels.getString("error"), tokenLabels.getString("server_error"), tokenLabels.getString("server_unavailable"), FontAwesomeSolid.EXCLAMATION_TRIANGLE);
+                dialog.showAndWait();
+            });
+        }
+
         if (response.statusCode() == 401) {
             System.out.println("Token expired");
             TokenManager.removeToken();
@@ -342,6 +453,14 @@ public class HttpManager {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         if (response.statusCode() != 201 && response.statusCode() != 200 && response.statusCode() != 409) {
             loadResourceBundle();
+
+            if (response.statusCode() == 500) {
+                Platform.runLater(() -> {
+                    ErrorDialog dialog = new ErrorDialog(tokenLabels.getString("error"), tokenLabels.getString("server_error"), tokenLabels.getString("server_unavailable"), FontAwesomeSolid.EXCLAMATION_TRIANGLE);
+                    dialog.showAndWait();
+                });
+            }
+
             if (response.statusCode() == 401) {
                 TokenManager.removeToken();
                 Platform.runLater(() -> {
@@ -363,13 +482,22 @@ public class HttpManager {
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         if (response.statusCode() != 201 && response.statusCode() != 200) {
-
-            TokenManager.removeToken();
             loadResourceBundle();
-            Platform.runLater(() -> {
-                TokenExpiredDialog dialog = new TokenExpiredDialog(tokenLabels.getString("tokenExpiredTitle"), tokenLabels.getString("tokenExpiredHeader"), tokenLabels.getString("tokenExpiredContent"));
-                dialog.showAndWait();
-            });
+
+            if (response.statusCode() == 500) {
+                Platform.runLater(() -> {
+                    ErrorDialog dialog = new ErrorDialog(tokenLabels.getString("error"), tokenLabels.getString("server_error"), tokenLabels.getString("server_unavailable"), FontAwesomeSolid.EXCLAMATION_TRIANGLE);
+                    dialog.showAndWait();
+                });
+            }
+
+            if (response.statusCode() == 401) {
+                TokenManager.removeToken();
+                Platform.runLater(() -> {
+                    TokenExpiredDialog dialog = new TokenExpiredDialog(tokenLabels.getString("tokenExpiredTitle"), tokenLabels.getString("tokenExpiredHeader"), tokenLabels.getString("tokenExpiredContent"));
+                    dialog.showAndWait();
+                });
+            }
         }
         return response;
     }

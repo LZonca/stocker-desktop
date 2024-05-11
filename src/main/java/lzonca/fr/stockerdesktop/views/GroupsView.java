@@ -14,6 +14,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import lzonca.fr.stockerdesktop.components.ErrorDialog;
@@ -43,6 +44,10 @@ public class GroupsView {
 
     @FXML
     public Button createGroupBtn;
+    @FXML
+    public StackPane buttonStackPane;
+    @FXML
+    public VBox groupsContainer;
 
     @FXML
     private ProgressIndicator refreshIndicator;

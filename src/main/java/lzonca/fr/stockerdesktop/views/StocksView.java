@@ -257,19 +257,66 @@ public class StocksView {
                     return;
                 }
 
-                // Set the FontAwesome icon
-                FontIcon trashIcon = new FontIcon("fas-trash");
-                removeButton.setGraphic(trashIcon);
-                removeButton.getStyleClass().add("default-button");
-
                 FontIcon showIcon = new FontIcon("fas-eye");
                 showButton.setGraphic(showIcon);
                 showButton.getStyleClass().add("default-button");
+
+                showButton.setOnAction(_ -> {
+                    try {
+                        // Load the FXML file for the Produit creation form
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/lzonca/fr/stockerdesktop/views/ShowProduit.fxml"));
+                        Parent root = loader.load();
+
+                        // Pass the stock to the controller
+                        ShowProduit controller = loader.getController();
+                        controller.setProduit(produit);
+
+                        // Create a new Scene with the loaded FXML file
+                        Scene scene = new Scene(root);
+
+                        // Create a new Stage to display the form
+                        Stage stage = new Stage();
+                        stage.setScene(scene);
+                        stage.setTitle(produit.getNom());
+                        stage.show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+
 
                 FontIcon editIcon = new FontIcon("fas-edit");
                 editButton.setGraphic(editIcon);
                 editButton.getStyleClass().add("default-button");
 
+                editButton.setOnAction(_ -> {
+                    try {
+                        // Load the FXML file for the Produit creation form
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/lzonca/fr/stockerdesktop/views/EditProduit.fxml"));
+                        Parent root = loader.load();
+
+                        // Pass the stock to the controller
+                        EditProduit controller = loader.getController();
+                        controller.setProduit(produit);
+                        controller.setStock(stock);
+
+                        // Create a new Scene with the loaded FXML file
+                        Scene scene = new Scene(root);
+
+                        // Create a new Stage to display the form
+                        Stage stage = new Stage();
+                        stage.setScene(scene);
+                        stage.setTitle(produit.getNom() + " " + labels.getString("edit"));
+                        stage.show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+
+                // Set the FontAwesome icon
+                FontIcon trashIcon = new FontIcon("fas-trash");
+                removeButton.setGraphic(trashIcon);
+                removeButton.getStyleClass().add("default-button");
 
                 removeButton.setOnAction(_ -> {
                     Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
