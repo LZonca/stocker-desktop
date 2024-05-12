@@ -7,6 +7,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import lzonca.fr.stockerdesktop.components.ErrorDialog;
+import lzonca.fr.stockerdesktop.models.Groupe;
 import lzonca.fr.stockerdesktop.system.HttpManager;
 import lzonca.fr.stockerdesktop.system.LanguageManager;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
@@ -28,13 +29,58 @@ public class CreateStockForm {
 
     private ResourceBundle labels;
 
+    private StocksView stocksView;
+
+    private GroupsView groupsView;
+
+    private boolean isFromGroupsView;
+
+    private Groupe groupe;
+
+
+
     @FXML
     private void initialize() {
         createStockButton.setOnAction(_ -> {
-            createStock();
+            HttpManager httpManager = new HttpManager();
+            try {
+                if (isFromGroupsView) {
+                    // Call createGroupProduit method if the form is opened from GroupsView
+                    httpManager.createGroupStock(nameField.getText(), groupe.getId());
+                    Platform.runLater(() -> {
+                        groupsView.refreshStocks();
+                        groupsView.refreshGroups(); // Add this line to refresh the groups
+                    });
+                } else {
+                    // Call createStock method if the form is opened from StocksView
+                    httpManager.createUserStock(nameField.getText());
+                    Platform.runLater(() -> stocksView.refreshStocks());
+                }
+
+                // Refresh the stocks
+                new ErrorDialog(labels.getString("success"), labels.getString("successTitleStockCreated"), labels.getString("successDescStockCreated"), FontAwesomeSolid.CHECK_CIRCLE).showAndWait();
+
+                // Close the current window
+                Stage stage = (Stage) createStockButton.getScene().getWindow();
+                stage.close();
+            } catch (IOException | InterruptedException e) {
+                Platform.runLater(() -> new ErrorDialog(labels.getString("error"), labels.getString("errorTitleFailedToCreateStock"), e.getMessage(), FontAwesomeSolid.EXCLAMATION_TRIANGLE).showAndWait());
+            }
         });
         loadResourceBundle();
         updateText(labels);
+    }
+    public void setFromGroupsView(boolean isFromGroupsView) {
+        this.isFromGroupsView = isFromGroupsView;
+    }
+
+    public void setGroupsView(GroupsView groupsView, Groupe groupe) {
+        this.groupsView = groupsView;
+        this.groupe = groupe;
+    }
+
+    public void setStocksView(StocksView stocksView) {
+        this.stocksView = stocksView;
     }
 
     private void loadResourceBundle() {

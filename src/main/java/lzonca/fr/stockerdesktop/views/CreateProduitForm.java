@@ -10,6 +10,7 @@ import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import lzonca.fr.stockerdesktop.components.ErrorDialog;
+import lzonca.fr.stockerdesktop.models.Groupe;
 import lzonca.fr.stockerdesktop.models.Stock;
 import lzonca.fr.stockerdesktop.system.HttpManager;
 import lzonca.fr.stockerdesktop.system.LanguageManager;
@@ -50,7 +51,15 @@ public class CreateProduitForm {
 
     private Stock stock;
 
+    private Groupe groupe;
+
     private File uploadedImage;
+
+    private StocksView stocksView;
+
+    private GroupsView groupsView;
+    private boolean isFromGroupsView;
+
 
     @FXML
     private void initialize() {
@@ -71,21 +80,44 @@ public class CreateProduitForm {
         validateButton.setOnAction(_ -> {
             HttpManager httpManager = new HttpManager();
             try {
-                httpManager.createProduit(stock.getId(), productNameInput.getText(), productCodeInput.getText(), productDesc.getText()/*, uploadedImage*/);
-                Platform.runLater(() -> {
+                if (isFromGroupsView) {
+                    // Call createGroupProduit method if the form is opened from GroupsView
+                    httpManager.createGroupProduit(stock.getId(), groupe.getId(),productNameInput.getText(), productCodeInput.getText(), productDesc.getText());
+                    Platform.runLater(() -> {
+                        groupsView.refreshStocks();
+                        groupsView.refreshGroups(); // Add this line to refresh the groups
+                    });
+                } else {
+                    // Call createStock method if the form is opened from StocksView
+                    httpManager.createProduit(stock.getId(), productNameInput.getText(), productCodeInput.getText(), productDesc.getText());
+                    // Refresh the stock
+                    Platform.runLater(() -> stocksView.refreshStock(stock));
+                }
 
-                    new ErrorDialog(labels.getString("success"), labels.getString("successTitleProductCreated"), labels.getString("successDescProductCreated"), FontAwesomeSolid.CHECK_CIRCLE).showAndWait();
 
-                    // Close the current window
-                    Stage stage = (Stage) validateButton.getScene().getWindow();
-                    stage.close();
-                });
+
+                new ErrorDialog(labels.getString("success"), labels.getString("successTitleProductCreated"), labels.getString("successDescProductCreated"), FontAwesomeSolid.CHECK_CIRCLE).showAndWait();
+
+                // Close the current window
+                Stage stage = (Stage) validateButton.getScene().getWindow();
+                stage.close();
             } catch (IOException | InterruptedException | URISyntaxException e) {
                 throw new RuntimeException(e);
             }
         });
         loadResourceBundle();
         updateText(labels);
+    }
+    public void setFromGroupsView(boolean isFromGroupsView) {
+        this.isFromGroupsView = isFromGroupsView;
+    }
+    public void setGroupsView(GroupsView groupsView, Groupe groupe) {
+        this.groupsView = groupsView;
+        this.groupe = groupe;
+    }
+
+    public void setStocksView(StocksView stocksView) {
+        this.stocksView = stocksView;
     }
 
     private void updateText(ResourceBundle labels) {

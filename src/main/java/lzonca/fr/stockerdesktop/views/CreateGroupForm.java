@@ -27,13 +27,36 @@ public class CreateGroupForm {
     @FXML
     public Label groupNameLabel;
 
+    private GroupsView groupsView;
+
+
+
     @FXML
     private void initialize() {
         createGroupButton.setOnAction(_ -> {
-            createGroup();
+            HttpManager httpManager = new HttpManager();
+
+
+            try {
+                httpManager.createGroup(nameField.getText());
+                // Refresh the groups
+                Platform.runLater(() -> groupsView.refreshGroups());
+
+                new ErrorDialog(labels.getString("success"), labels.getString("successTitleGroupCreated"), labels.getString("successDescGroupCreated"), FontAwesomeSolid.CHECK_CIRCLE).showAndWait();
+
+                // Close the current window
+                Stage stage = (Stage) createGroupButton.getScene().getWindow();
+                stage.close();
+            } catch (IOException | InterruptedException e) {
+                Platform.runLater(() -> new ErrorDialog(labels.getString("error"), labels.getString("errorTitleFailedToCreateGroup"), e.getMessage(), FontAwesomeSolid.EXCLAMATION_TRIANGLE).showAndWait());
+            }
         });
         loadResourceBundle();
         updateText(labels);
+    }
+
+    public void setGroupsView(GroupsView groupsView) {
+        this.groupsView = groupsView;
     }
 
     private void loadResourceBundle() {

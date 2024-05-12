@@ -49,7 +49,7 @@ public class StocksView {
     private Accordion stocksAccordion;
     private User user;
     private ResourceBundle labels;
-    private Map<Stock, TitledPane> stockPanes = new HashMap<>();
+    private final Map<Stock, TitledPane> stockPanes = new HashMap<>();
 
     @FXML
     public void initialize() {
@@ -69,7 +69,10 @@ public class StocksView {
             // Create a new Scene with the loaded FXML file
             Scene scene = new Scene(root);
 
-            // Create a new Stage to display the form
+            CreateStockForm createStockForm = new CreateStockForm();
+            createStockForm.setStocksView(this); // assuming 'this' is an instance of StocksView
+            createStockForm.setFromGroupsView(false); // set the flag
+
             Stage stage = new Stage();
             stage.setScene(scene);
             stage.setTitle(labels.getString("createStock"));
@@ -118,6 +121,11 @@ public class StocksView {
         VBox.setVgrow(table, Priority.ALWAYS);
 
 
+        Button refreshStockBtn = new Button(labels.getString("refreshStock"));
+        refreshStockBtn.setGraphic(new FontIcon("fas-sync"));
+        refreshStockBtn.setOnAction(_ -> refreshStock(stock));
+        refreshStockBtn.getStyleClass().add("default-button");
+
         // Define columns
         TableColumn<Produit, String> codeColumn = new TableColumn<>(labels.getString("productCode"));
         codeColumn.setCellValueFactory(new PropertyValueFactory<>("code"));
@@ -128,18 +136,7 @@ public class StocksView {
         nameColumn.setMinWidth(150); // Set minimum width
 
 
-        /*TableColumn<Produit, Integer> quantityColumn = new TableColumn<>(labels.getString("productQuantity"));
-        quantityColumn.setCellValueFactory(cellData -> {
-            Produit produit = cellData.getValue();
-            if (produit != null && produit.getPivot() != null) {
-                return new ReadOnlyObjectWrapper<>(produit.getPivot().getQuantite());
-            } else {
-                return new ReadOnlyObjectWrapper<>(0);
-            }
-        });
-        quantityColumn.setMinWidth(50); // Set minimum width*/
-
-// Create a delete button
+        // Create a delete button
         Button deleteButton = new Button();
         deleteButton.getStyleClass().add("default-button");
         deleteButton.setGraphic(new FontIcon("fas-trash"));
@@ -299,6 +296,7 @@ public class StocksView {
                         EditProduit controller = loader.getController();
                         controller.setProduit(produit);
                         controller.setStock(stock);
+                        controller.setStocksView(StocksView.this); // pass the reference of StocksView
 
                         // Create a new Scene with the loaded FXML file
                         Scene scene = new Scene(root);
@@ -368,11 +366,13 @@ public class StocksView {
         Button createProduitBtn = new Button(labels.getString("createProduit"));
         createProduitBtn.setOnAction(_ -> openNewProduitForm(stock));
         createProduitBtn.getStyleClass().add("default-button");
+        createProduitBtn.setGraphic(new FontIcon("fas-plus"));
 
         // Add the table and the "Create Product" button to a VBox
-        VBox vbox = new VBox(createProduitBtn, table);
+        VBox vbox = new VBox(createProduitBtn,refreshStockBtn, table);
         vbox.setFillWidth(true);
 
+        // Set the content of the TitledPane to the ScrollPane
         // Set the content of the TitledPane to the VBox
         stockPane.setContent(vbox);
 
@@ -384,7 +384,68 @@ public class StocksView {
         return stockPane;
     }
 
-    private void refreshStocks() {
+    public void refreshStock(Stock stock) {
+
+        Platform.runLater(() -> {
+            refreshIndicator.setVisible(true);
+            buttonLabel.setText("");
+        });
+
+        HttpManager httpManager = new HttpManager();
+        // Fetch the data in a new thread to avoid blocking the UI
+        new Thread(() -> {
+            try {
+                HttpResponse<String> response = httpManager.getStocksProduits(stock.getId());
+                if (response.statusCode() == 200) {
+                    // Parse the response body to get the groups
+                    ObjectMapper mapper = new ObjectMapper();
+                    mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+                    List<Produit> produits = Arrays.asList(mapper.readValue(response.body(), Produit[].class));
+
+                    stock.setProduits(produits);
+
+                    // Refresh the display
+                    Platform.runLater(() -> displaySpecificStock(stock));
+                } else {
+                    ErrorDialog errorDialog = new ErrorDialog(labels.getString("error"), labels.getString("refreshFailedTitle"), labels.getString("refreshFailedMessage"), FontAwesomeSolid.EXCLAMATION_CIRCLE);
+                }
+            } catch (IOException | InterruptedException e) {
+                Platform.runLater(() -> new ErrorDialog(labels.getString("error"), labels.getString("refreshFailedTitle"), e.getMessage(), FontAwesomeSolid.EXCLAMATION_CIRCLE).showAndWait());
+            } finally {
+                // Hide the spinner and show the text
+                Platform.runLater(() -> {
+                    refreshIndicator.setVisible(false);
+                    buttonLabel.setText(labels.getString("refresh"));
+                });
+            }
+        }).start();
+    }
+
+    private void displaySpecificStock(Stock specificStock) {
+        // Find the TitledPane associated with the specific stock
+        TitledPane stockPane = stockPanes.get(specificStock);
+
+        if (stockPane != null) {
+            // Get the VBox that contains the TableView
+            VBox vbox = (VBox) stockPane.getContent();
+
+            // Get the TableView from the VBox
+            TableView<Produit> table = (TableView<Produit>) vbox.getChildren().get(2);
+
+            // Clear the existing items in the table
+            table.getItems().clear();
+
+            // Add products of the specific stock to the table
+            for (Produit product : specificStock.getProduits()) {
+                table.getItems().add(product);
+            }
+
+            // Refresh the table view to update the UI
+            table.refresh();
+        }
+    }
+
+    public void refreshStocks() {
         // Show the spinner and remove the text
         Platform.runLater(() -> {
             refreshIndicator.setVisible(true);
@@ -430,6 +491,7 @@ public class StocksView {
             // Pass the stock to the controller
             CreateProduitForm controller = loader.getController();
             controller.setStock(stock);
+            controller.setStocksView(this); // pass the reference of StocksView
 
             // Create a new Scene with the loaded FXML file
             Scene scene = new Scene(root);
