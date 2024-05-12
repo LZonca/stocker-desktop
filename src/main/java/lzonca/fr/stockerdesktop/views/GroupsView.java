@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.http.HttpResponse;
 import java.util.*;
+import java.util.concurrent.CountDownLatch;
 
 public class GroupsView {
     private final HttpManager httpManager;
@@ -136,23 +137,26 @@ public class GroupsView {
         List<Groupe> groupes = user.getGroupes();
         if (groupes != null) {
             for (Groupe groupe : groupes) {
+                System.out.println("Affichage du groupe: " + groupe.getNom());
                 // Create a new TitledPane for each group
                 TitledPane groupPane = createGroupAccordion(groupe);
-                // Add the groupPane to the groupsAccordion
-                if (groupe.getStocks() != null && !groupe.getStocks().isEmpty() && groupe.getStocks().get(0).getProduits() != null) {
-                    System.out.println(groupe.getStocks().get(0).getProduits().get(0).getNom());
-                }
                 groupsAccordion.getPanes().add(groupPane);
             }
+        }else{
+            System.out.println("Aucun groupe à afficher");
         }
     }
 
 
+
     public void refreshGroupStocks(Groupe groupe) {
+        // Initialize the CountDownLatch with the number of stocks
+        CountDownLatch latch = new CountDownLatch(groupe.getStocks().size());
+
         // Fetch the data in a new thread to avoid blocking the UI
-        new Thread(() -> {
-            try {
-                for (Stock stock : groupe.getStocks()) {
+        for (Stock stock : groupe.getStocks()) {
+            new Thread(() -> {
+                try {
                     HttpResponse<String> response = httpManager.getStocksProduits(stock.getId());
                     if (response.statusCode() == 200) {
                         // Parse the response body to get the products
@@ -164,11 +168,23 @@ public class GroupsView {
                     } else {
                         ErrorDialog errorDialog = new ErrorDialog(labels.getString("error"), labels.getString("refreshFailedTitle"), labels.getString("refreshFailedMessage"), FontAwesomeSolid.EXCLAMATION_CIRCLE);
                     }
+                } catch (IOException | InterruptedException e) {
+                    Platform.runLater(() -> new ErrorDialog(labels.getString("error"), labels.getString("refreshFailedTitle"), e.getMessage(), FontAwesomeSolid.EXCLAMATION_CIRCLE).showAndWait());
+                } finally {
+                    latch.countDown(); // Decrement the count of the latch
                 }
-            } catch (IOException | InterruptedException e) {
-                Platform.runLater(() -> new ErrorDialog(labels.getString("error"), labels.getString("refreshFailedTitle"), e.getMessage(), FontAwesomeSolid.EXCLAMATION_CIRCLE).showAndWait());
-            }
-        }).start();
+            }).start();
+        }
+
+        // Wait for all the threads to finish
+        try {
+            latch.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        // Refresh the display on the JavaFX Application Thread
+        Platform.runLater(this::displayGroups);
     }
 
     public void refreshGroups() {
@@ -208,13 +224,7 @@ public class GroupsView {
         }).start();
     }
 
-    private TitledPane createGroupAccordion(Groupe groupe) {
-        // Create a TitledPane for each group
-        TitledPane groupPane = new TitledPane();
-
-        // Create a VBox to hold the group name and the accordions
-        VBox vbox = new VBox();
-
+    private HBox createTitleBox(Groupe groupe) {
         // Create a HBox for the title region
         HBox titleBox = new HBox();
         titleBox.setSpacing(10); // Add some spacing between the label and the button
@@ -245,7 +255,7 @@ public class GroupsView {
                     } catch (IOException | InterruptedException | URISyntaxException e) {
                         throw new RuntimeException(e);
                     }
-                    groupsAccordion.getPanes().remove(groupPane);
+                    titleBox.getChildren().add(deleteButton);
                 }
             });
             titleBox.getChildren().add(deleteButton);
@@ -270,29 +280,15 @@ public class GroupsView {
                     } catch (IOException | InterruptedException | URISyntaxException e) {
                         throw new RuntimeException(e);
                     }
-                    groupsAccordion.getPanes().remove(groupPane);
                 }
             });
             titleBox.getChildren().add(leaveButton);
         }
 
-        // Set the HBox as the graphic of the TitledPane and set the text to null
-        groupPane.setGraphic(titleBox);
-        groupPane.setText(null);
+        return titleBox;
+    }
 
-        // Create a Label for the group name and add it to the VBox
-        Label groupNameLabel = new Label(groupe.getNom());
-        groupNameLabel.setStyle("-fx-font-size: 25px;");
-        vbox.getChildren().add(groupNameLabel);
-
-        // Get the owner's name directly from the Groupe object
-        String ownerName = groupe.getProprietaire().getName();
-
-        // Create a Label for the owner's name and add it to the VBox
-        Label ownerNameLabel = new Label(labels.getString("owner") + ":" + ownerName);
-        ownerNameLabel.setStyle("-fx-font-size: 20px;");
-        vbox.getChildren().add(ownerNameLabel);
-
+    private Accordion createMembersAccordion(Groupe groupe) {
         // Create an Accordion for the members of the group
         Accordion membersAccordion = new Accordion();
 
@@ -301,6 +297,121 @@ public class GroupsView {
         membersPane.setText(labels.getString("groupMembers"));
 
         // Create a TableView to hold the group members
+        TableView<User> membersTable = createMemberTable(groupe);
+
+        // Set the content of the membersPane to the membersTable TableView
+        membersPane.setContent(membersTable);
+
+        // Add the membersPane to the membersAccordion
+        membersAccordion.getPanes().add(membersPane);
+
+        return membersAccordion;
+    }
+
+    private Accordion createStocksAccordion(Groupe groupe) {
+        // Create a TitledPane for each stock
+        Accordion stocksAccordion = new Accordion();
+        TitledPane stocksPane = new TitledPane();
+        stocksPane.setText(labels.getString("groupStocks"));
+        stocksAccordion.getPanes().add(stocksPane);
+
+        // Create a VBox to hold the "Add Stock" button and the stocks
+        VBox stocksBox = new VBox();
+
+        // Create "Add Stock" button
+        Button addStockButton = new Button(labels.getString("addStock"));
+        addStockButton.getStyleClass().add("default-button");
+        addStockButton.setOnAction(_ -> openNewStockForm(groupe));
+
+        // Add the button to the stocksBox
+        stocksBox.getChildren().add(addStockButton);
+        Accordion stockAccordion = new Accordion();
+        for (Stock stock : groupe.getStocks()) {
+            // Create a TitledPane for the stock
+
+            TitledPane stockPane = new TitledPane();
+            stockPane.setText(stock.getNom());
+            VBox stockPaneContent = new VBox();
+
+            Button newProductButton = new Button(labels.getString("addProduct"));
+            newProductButton.getStyleClass().add("default-button");
+            newProductButton.setOnAction(_ -> {
+                try {
+                    // Load the FXML file for the Produit creation form
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/lzonca/fr/stockerdesktop/views/forms/CreateProduitForm.fxml"));
+                    Parent root = loader.load();
+
+                    // Pass the stock to the controller
+                    CreateProduitForm controller = loader.getController();
+                    controller.setStock(stock);
+                    controller.setFromGroupsView(true); // set the flag
+                    controller.setGroupsView(this, groupe); // pass the reference of GroupsView
+
+                    // Create a new Scene with the loaded FXML file
+                    Scene scene = new Scene(root);
+
+                    // Create a new Stage to display the form
+                    Stage stage = new Stage();
+                    stage.setScene(scene);
+                    stage.setTitle(labels.getString("createProduct"));
+                    stage.show();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+
+            // Create a TableView for the stock
+            TableView<Produit> table = createProductTable(stock);
+
+            stockPaneContent.getChildren().addAll(newProductButton, table);
+            stockPane.setContent(stockPaneContent);
+
+            stockAccordion.getPanes().add(stockPane);
+        }
+        stocksBox.getChildren().add(stockAccordion);
+        stocksPane.setContent(stocksBox);
+
+        return stocksAccordion;
+    }
+
+    private TitledPane createGroupAccordion(Groupe groupe) {
+        // Create a TitledPane for each group
+        TitledPane groupPane = new TitledPane();
+
+        // Create a VBox to hold the group name and the accordions
+        VBox groupVbox = new VBox();
+
+        // Set the HBox as the graphic of the TitledPane and set the text to null
+        groupPane.setGraphic(createTitleBox(groupe));
+        groupPane.setText(null);
+
+        // Create a Label for the group name and add it to the VBox
+        Label groupNameLabel = new Label(groupe.getNom());
+        groupNameLabel.setStyle("-fx-font-size: 25px;");
+        groupVbox.getChildren().add(groupNameLabel);
+
+        // Get the owner's name directly from the Groupe object
+        String ownerName = groupe.getProprietaire().getName();
+
+        // Create a Label for the owner's name and add it to the VBox
+        Label ownerNameLabel = new Label(labels.getString("owner") + ":" + ownerName);
+        ownerNameLabel.setStyle("-fx-font-size: 20px;");
+        groupVbox.getChildren().add(ownerNameLabel);
+
+        // Add the membersAccordion to the groupVbox
+        groupVbox.getChildren().add(createMembersAccordion(groupe));
+
+        // Add the Accordion to the group's TitledPane
+        groupVbox.getChildren().add(createStocksAccordion(groupe)); // Add the stocksAccordion to the groupVbox
+
+        groupPane.setContent(groupVbox);
+
+        return groupPane;
+    }
+
+
+
+    private TableView<User> createMemberTable(Groupe groupe){
         TableView<User> membersTable = new TableView<>();
 
         // Create the name column
@@ -357,126 +468,59 @@ public class GroupsView {
             }
         }
 
-        TextField emailField = new TextField();
-        emailField.setPromptText(labels.getString("enterEmail"));
-        if (groupe.getProprietaire().getId() == user.getId()) {
-
-            Button addUserButton = new Button(labels.getString("addUser"));
-            addUserButton.getStyleClass().add("default-button");
-
-            addUserButton.setOnAction(_ -> addUserToGroup(groupe.getId(), emailField.getText())); // Pass the group ID to the event handler
-            vbox.getChildren().add(addUserButton);
-
-            // Modify the addUserButton event handler to get the text from the TextField
-            addUserButton.setOnAction((ActionEvent _) -> {
-                String email = emailField.getText();
-                if (!email.isEmpty()) {
-                    addUserToGroup(groupe.getId(), email);
-                    emailField.clear();
-                } else {
-                    Platform.runLater(() -> {
-                        new ErrorDialog(labels.getString("error"), labels.getString("addUserTitle"), labels.getString("addUserMessage"), FontAwesomeSolid.EXCLAMATION_CIRCLE).showAndWait();
-                    });
-                }
-            });
-
-            // Add the TextField to the VBox
-            vbox.getChildren().add(emailField);
-        }
-
         // Add each member of the group to the TableView
         for (User member : groupe.getMembers()) {
             membersTable.getItems().add(member);
         }
 
-        // Set the content of the membersPane to the membersTable TableView
-        membersPane.setContent(membersTable);
-
-        // Add the membersPane to the membersAccordion
-        membersAccordion.getPanes().add(membersPane);
-
-        Accordion stocksAccordion = new Accordion();
-        TitledPane stocksPane = new TitledPane();
-        stocksPane.setText(labels.getString("groupStocks"));
-
-
-        VBox stocksVBox = new VBox();
-        stocksPane.setContent(stocksVBox);
-
-        stocksAccordion.getPanes().add(stocksPane);
-
-        Button addStockButton = new Button(labels.getString("addStock"));
-        addStockButton.getStyleClass().add("default-button");
-        addStockButton.setOnAction(_ -> {
-                openNewStockForm(groupe);
-        });
-
-        stocksVBox.getChildren().add(addStockButton);
-
-
-
-        for (Stock stock : groupe.getStocks()) {
-            // Create a TitledPane for each stock
-            TitledPane stockPane = createStockPane(stock);
-            VBox stockPaneContent = new VBox();
-
-            Button newProductButton = new Button(labels.getString("addProduct"));
-            newProductButton.getStyleClass().add("default-button");
-            newProductButton.setOnAction(_ -> {
-                try {
-                    // Load the FXML file for the Produit creation form
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/lzonca/fr/stockerdesktop/views/forms/CreateProduitForm.fxml"));
-                    Parent root = loader.load();
-
-                    // Pass the stock to the controller
-                    CreateProduitForm controller = loader.getController();
-                    controller.setStock(stock);
-                    controller.setFromGroupsView(true); // set the flag
-                    controller.setGroupsView(this, groupe); // pass the reference of GroupsView
-
-                    // Create a new Scene with the loaded FXML file
-                    Scene scene = new Scene(root);
-
-                    // Create a new Stage to display the form
-                    Stage stage = new Stage();
-                    stage.setScene(scene);
-                    stage.setTitle(labels.getString("createProduct"));
-                    stage.show();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            });
-            // Create a TableView for the stock
-            TableView<Produit> table = createProductTable(stock);
-
-            // Set the content of the stockPane to the TableView
-            stockPaneContent.getChildren().addAll(newProductButton, table);
-
-            stockPane.setContent(stockPaneContent);
-            stocksPane.setContent(stockPane);
-        }
-
-
-        // Set the content of the TitledPane to the ScrollPane
-
-        // Add the membersAccordion to the VBox
-        vbox.getChildren().add(membersAccordion);
-        vbox.getChildren().add(stocksAccordion);
-        vbox.setSpacing(10); // Add some spacing between the elements
-        // Set the content of the groupPane to the vbox
-        groupPane.setContent(vbox);
-
-        return groupPane;
+        return membersTable;
     }
 
-    private TitledPane createStockPane(Stock stock) {
+    private TitledPane createStockPane(Stock stock, Groupe groupe) {
         TitledPane stockPane = new TitledPane();
         stockPane.setText(stock.getNom());
+        VBox stockPaneContent = new VBox();
+
+        Button newProductButton = new Button(labels.getString("addProduct"));
+        newProductButton.getStyleClass().add("default-button");
+        newProductButton.setOnAction(_ -> {
+            try {
+                // Load the FXML file for the Produit creation form
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/lzonca/fr/stockerdesktop/views/forms/CreateProduitForm.fxml"));
+                Parent root = loader.load();
+
+                // Pass the stock to the controller
+                CreateProduitForm controller = loader.getController();
+                controller.setStock(stock);
+                controller.setFromGroupsView(true); // set the flag
+                controller.setGroupsView(this, groupe); // pass the reference of GroupsView
+
+                // Create a new Scene with the loaded FXML file
+                Scene scene = new Scene(root);
+
+                // Create a new Stage to display the form
+                Stage stage = new Stage();
+                stage.setScene(scene);
+                stage.setTitle(labels.getString("createProduct"));
+                stage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+        // Create a TableView for the stock
+        TableView<Produit> table = createProductTable(stock);
+
+        // Set the content of the stockPane to the TableView
+        stockPaneContent.getChildren().addAll(newProductButton, table);
+        stockPane.setContent(stockPaneContent);
 
         return stockPane;
     }
 
     private TableView<Produit> createProductTable(Stock stock) {
+
+        System.out.println("Création table des produits pour le stock: " + stock.getNom());
+
         TableView<Produit> table = new TableView<>();
 
         // Define columns
@@ -707,19 +751,18 @@ public class GroupsView {
         table.getColumns().add(nameColumn);
         table.getColumns().add(quantityChangeColumn);
         table.getColumns().add(removeColumn);
+
         // Add products to the table
-        if (stock.getProduits() != null) { // Check if getProduits() is not null
-            System.out.println("Products in stock: " + stock.getProduits());
-            for (Produit product : stock.getProduits()) {
-                System.out.println("Adding product: " + product);
+        List<Produit> produits = stock.getProduits();
+        /*System.out.println(produits);*/
+        System.out.println("ON AFFICGHE SA MERE");
+        if (produits != null) {
+            for (Produit product : produits) {
+                System.out.println(product.getNom() + " ajouté au stock");
                 table.getItems().add(product);
             }
-        } else {
-            System.out.println("No products in stock");
         }
 
-        // Refresh the TableView
-        table.refresh();
         return table;
     }
 
@@ -768,7 +811,7 @@ public class GroupsView {
                 // Add the stocks of the group
                 for (Stock stock : groupe.getStocks()) {
                     // Create a TitledPane for the stock
-                    TitledPane stockPane = createStockPane(stock);
+                    TitledPane stockPane = createStockPane(stock, groupe);
 
                     // Add the stockPane to the stocksAccordion
                     stocksAccordion.getPanes().add(stockPane);
@@ -822,7 +865,6 @@ public class GroupsView {
             removeButtonColumn.setSortable(false); // Add this line
             removeButtonColumn.setCellFactory(_ -> new TableCell<>() {
                 private final Button removeButton = new Button(labels.getString("removeUser"));
-
                 {
                     removeButton.getStyleClass().add("default-button");
                     FontIcon trashIcon = new FontIcon("fas-user-slash");

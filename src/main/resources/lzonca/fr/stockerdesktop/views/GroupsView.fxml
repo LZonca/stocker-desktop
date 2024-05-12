@@ -61,9 +61,9 @@
                                     </TitledPane>
                                     <TitledPane fx:id="stocksPane" animated="false" text="Stocks du groupe">
                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                                 <children>
-                                    <ScrollBar layoutX="378.0" layoutY="14.0" orientation="VERTICAL" prefHeight="162.0" prefWidth="14.0" />
-                                 </children></AnchorPane>
+                                            <ScrollBar layoutX="378.0" layoutY="14.0" orientation="VERTICAL"
+                                                       prefHeight="162.0" prefWidth="14.0"/>
+                                        </AnchorPane>
                                     </TitledPane>
                                 </panes>
                             </Accordion>
