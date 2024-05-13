@@ -206,6 +206,38 @@ public class HttpManager {
         }
         return response;
     }
+    public HttpResponse<String> updateGroupeProduit(int stockId, int groupeId, int productId, String productName, String productCode, String productDesc) throws IOException, InterruptedException, URISyntaxException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(new URI(baseUrl + "/groups/"+ groupeId +"/stocks/" + stockId + "/produits/" + productId))
+                .header("Authorization", "Bearer " + token)
+                .header("Content-Type", "application/json")
+                .header("Accept-Language", locale)
+                .method("PATCH", HttpRequest.BodyPublishers.ofString("{\"nom\":\"" + productName + "\",\"code\":\"" + productCode + "\",\"description\":\"" + productDesc + "\"}"))
+                .build();
+        System.out.println(request);
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        System.out.println(response.body());
+        if (response.statusCode() != 201 && response.statusCode() != 200 && response.statusCode() != 409 && response.statusCode() != 204) {
+            loadResourceBundle();
+
+            if (response.statusCode() == 500) {
+                Platform.runLater(() -> {
+                    ErrorDialog dialog = new ErrorDialog(tokenLabels.getString("error"), tokenLabels.getString("server_error"), tokenLabels.getString("server_unavailable"), FontAwesomeSolid.EXCLAMATION_TRIANGLE);
+                    dialog.showAndWait();
+                });
+            }
+
+            if (response.statusCode() == 401) {
+                TokenManager.removeToken();
+                Platform.runLater(() -> {
+                    TokenExpiredDialog dialog = new TokenExpiredDialog(tokenLabels.getString("tokenExpiredTitle"), tokenLabels.getString("tokenExpiredHeader"), tokenLabels.getString("tokenExpiredContent"));
+                    dialog.showAndWait();
+                });
+            }
+        }
+        return response;
+    }
+
 
     public HttpResponse<String> updateProductQuantity(int stockId, int produitId, int quantite) throws IOException, InterruptedException, URISyntaxException {
         HttpRequest request = HttpRequest.newBuilder()

@@ -368,8 +368,10 @@ public class StocksView {
         createProduitBtn.setGraphic(new FontIcon("fas-plus"));
 
         // Add the table and the "Create Product" button to a VBox
+        // Add the table and the "Create Product" button to a VBox
         VBox vbox = new VBox(createProduitBtn,refreshStockBtn, table);
         vbox.setFillWidth(true);
+        vbox.setAlignment(Pos.CENTER); // Center the children
 
         // Set the content of the TitledPane to the ScrollPane
         // Set the content of the TitledPane to the VBox

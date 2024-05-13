@@ -29,13 +29,9 @@ public class CreateGroupStockForm {
 
     private ResourceBundle labels;
 
-    private StocksView stocksView;
-
     private GroupsView groupsView;
 
     private Groupe groupe;
-
-
 
     @FXML
     private void initialize() {
@@ -66,10 +62,6 @@ public class CreateGroupStockForm {
     public void setGroupsView(GroupsView groupsView, Groupe groupe) {
         this.groupsView = groupsView;
         this.groupe = groupe;
-    }
-
-    public void setStocksView(StocksView stocksView) {
-        this.stocksView = stocksView;
     }
 
     private void loadResourceBundle() {

@@ -29,22 +29,29 @@
         </Label>
         <Button fx:id="createStockBtn" mnemonicParsing="false" prefHeight="34.0" prefWidth="216.0"
                 styleClass="main-button" stylesheets="@../css/styles.css" text="Create new stock"/>
-        <Accordion fx:id="stocksAccordion">
-            <panes>
-                <TitledPane fx:id="userStocksPane" animated="false" prefHeight="40.0" prefWidth="828.0"
-                            stylesheets="@../css/styles.css" text="Vos stocks">
-                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="652.0" prefWidth="826.0">
-                        <CharmListView layoutX="-1.0" layoutY="-4.0" prefHeight="465.0" prefWidth="828.0"
-                                       AnchorPane.bottomAnchor="-4.0" AnchorPane.leftAnchor="-11.0"
-                                       AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="-4.0"/>
-                    </AnchorPane>
-                </TitledPane>
-                <TitledPane animated="false" text="Stocks de vos groupes">
-                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="489.0" prefWidth="826.0">
-                        <CharmListView prefHeight="465.0" prefWidth="828.0"/>
-                    </AnchorPane>
-                </TitledPane>
-            </panes>
-        </Accordion>
+        <ScrollPane fitToWidth="true" fitToHeight="true">
+            <VBox alignment="CENTER" > <!-- Add padding here -->
+                <padding>
+                    <Insets bottom="20"/>
+                </padding>
+                <Accordion fx:id="stocksAccordion">
+                    <panes>
+                        <TitledPane fx:id="userStocksPane" animated="false" prefHeight="40.0" prefWidth="828.0"
+                                    stylesheets="@../css/styles.css" text="Vos stocks">
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="652.0" prefWidth="826.0">
+                                <CharmListView layoutX="-1.0" layoutY="-4.0" prefHeight="465.0" prefWidth="828.0"
+                                               AnchorPane.bottomAnchor="-4.0" AnchorPane.leftAnchor="-11.0"
+                                               AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="-4.0"/>
+                            </AnchorPane>
+                        </TitledPane>
+                        <TitledPane animated="false" text="Stocks de vos groupes">
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="489.0" prefWidth="826.0">
+                                <CharmListView prefHeight="465.0" prefWidth="828.0"/>
+                            </AnchorPane>
+                        </TitledPane>
+                    </panes>
+                </Accordion>
+            </VBox>
+        </ScrollPane>
     </VBox>
 </AnchorPane>

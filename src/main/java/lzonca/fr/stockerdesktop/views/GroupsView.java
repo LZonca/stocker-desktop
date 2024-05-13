@@ -335,6 +335,9 @@ public class GroupsView {
     }
 
     private Accordion createStocksAccordion(Groupe groupe) {
+
+
+
         // Create a TitledPane for each stock
         Accordion stocksAccordion = new Accordion();
         TitledPane stocksPane = new TitledPane();
@@ -342,6 +345,7 @@ public class GroupsView {
         stocksAccordion.getPanes().add(stocksPane);
 
         // Create a VBox to hold the "Add Stock" button and the stocks
+        ScrollPane stocksScrollPane = new ScrollPane();
         VBox stocksBox = new VBox();
 
         // Create "Add Stock" button
@@ -422,8 +426,8 @@ public class GroupsView {
             stockAccordion.getPanes().add(stockPane);
         }
         stocksBox.getChildren().add(stockAccordion);
+        stocksScrollPane.setContent(stocksBox);
         stocksPane.setContent(stocksBox);
-
         return stocksAccordion;
     }
 
@@ -451,8 +455,12 @@ public class GroupsView {
         ownerNameLabel.setStyle("-fx-font-size: 20px;");
         groupVbox.getChildren().add(ownerNameLabel);
 
+
+
         // Add the membersAccordion to the groupVbox
         groupVbox.getChildren().add(createMembersAccordion(groupe));
+
+
 
         // Add the Accordion to the group's TitledPane
         groupVbox.getChildren().add(createStocksAccordion(groupe)); // Add the stocksAccordion to the groupVbox
@@ -737,14 +745,14 @@ public class GroupsView {
                 editButton.setOnAction(_ -> {
                     try {
                         // Load the FXML file for the Produit creation form
-                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/lzonca/fr/stockerdesktop/views/EditProduit.fxml"));
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/lzonca/fr/stockerdesktop/views/EditGroupProduit.fxml"));
                         Parent root = loader.load();
 
                         // Pass the stock to the controller
-                        EditProduit controller = loader.getController();
+                        EditGroupProduit controller = loader.getController();
                         controller.setProduit(produit);
                         controller.setStock(stock);
-                       /* TODO: updatethis controller.setGroups(StocksView.this); // pass the reference of StocksView*/
+                        controller.setGroupsView(GroupsView.this, groupe);
 
                         // Create a new Scene with the loaded FXML file
                         Scene scene = new Scene(root);
@@ -821,15 +829,18 @@ public class GroupsView {
 
     private void openNewStockForm(Groupe groupe) {
         try {
-            // Load the FXML file
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/lzonca/fr/stockerdesktop/views/forms/CreateStockForm.fxml"));
+            // Load the FXML file for the Group Stock creation form
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/lzonca/fr/stockerdesktop/views/forms/CreateGroupStockForm.fxml"));
             Parent root = loader.load();
+
+            // Get the controller
+            CreateGroupStockForm controller = loader.getController(); // Use CreateGroupStockForm here
+
+            // Set the groupsView in the controller
+            controller.setGroupsView(this, groupe); // 'this' refers to the current instance of GroupsView
 
             // Create a new Scene with the loaded FXML file
             Scene scene = new Scene(root);
-
-            CreateGroupStockForm controller = loader.getController();
-            controller.setGroupsView(this, groupe); // existing line
 
             Stage stage = new Stage();
             stage.setScene(scene);
