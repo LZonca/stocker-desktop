@@ -7,6 +7,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import lzonca.fr.stockerdesktop.components.ErrorDialog;
+import lzonca.fr.stockerdesktop.models.Groupe;
 import lzonca.fr.stockerdesktop.system.HttpManager;
 import lzonca.fr.stockerdesktop.system.LanguageManager;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
@@ -15,7 +16,8 @@ import java.io.IOException;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-public class CreateStockForm {
+public class CreateGroupStockForm {
+
     @FXML
     public Label TitleLabel;
     @FXML
@@ -29,6 +31,9 @@ public class CreateStockForm {
 
     private StocksView stocksView;
 
+    private GroupsView groupsView;
+
+    private Groupe groupe;
 
 
 
@@ -37,10 +42,12 @@ public class CreateStockForm {
         createStockButton.setOnAction(_ -> {
             HttpManager httpManager = new HttpManager();
             try {
-                    httpManager.createUserStock(nameField.getText());
-                   if (stocksView != null){
-                       Platform.runLater(() -> stocksView.refreshStocks());
-                   }
+                    // Call createGroupProduit method if the form is opened from GroupsView
+                    httpManager.createGroupStock(nameField.getText(), groupe.getId());
+                    Platform.runLater(() -> {
+                        groupsView.refreshStocks();
+                        groupsView.refreshGroups(); // Add this line to refresh the groups
+                    });
 
                 // Refresh the stocks
                 new ErrorDialog(labels.getString("success"), labels.getString("successTitleStockCreated"), labels.getString("successDescStockCreated"), FontAwesomeSolid.CHECK_CIRCLE).showAndWait();
@@ -54,6 +61,11 @@ public class CreateStockForm {
         });
         loadResourceBundle();
         updateText(labels);
+    }
+
+    public void setGroupsView(GroupsView groupsView, Groupe groupe) {
+        this.groupsView = groupsView;
+        this.groupe = groupe;
     }
 
     public void setStocksView(StocksView stocksView) {

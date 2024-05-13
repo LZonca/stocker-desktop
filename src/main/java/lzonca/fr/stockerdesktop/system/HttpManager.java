@@ -237,9 +237,70 @@ public class HttpManager {
         return response;
     }
 
+    public HttpResponse<String> updateGroupProductQuantity(int stockId, int groupeId, int produitId, int quantite) throws IOException, InterruptedException, URISyntaxException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(new URI(baseUrl + "/groups/" + groupeId + "/stocks/" + stockId + "/produits/" + produitId + "/quantite"))
+                .header("Authorization", "Bearer " + token)
+                .header("Content-Type", "application/json")
+                .header("Accept-Language", locale)
+                .method("PATCH", HttpRequest.BodyPublishers.ofString("{\"quantite\":" + quantite + "}"))
+                .build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        if (response.statusCode() != 201 && response.statusCode() != 200 && response.statusCode() != 409 && response.statusCode() != 204) {
+            loadResourceBundle();
+
+            if (response.statusCode() == 500) {
+                Platform.runLater(() -> {
+                    ErrorDialog dialog = new ErrorDialog(tokenLabels.getString("error"), tokenLabels.getString("server_error"), tokenLabels.getString("server_unavailable"), FontAwesomeSolid.EXCLAMATION_TRIANGLE);
+                    dialog.showAndWait();
+                });
+            }
+
+            if (response.statusCode() == 401) {
+                TokenManager.removeToken();
+                Platform.runLater(() -> {
+                    TokenExpiredDialog dialog = new TokenExpiredDialog(tokenLabels.getString("tokenExpiredTitle"), tokenLabels.getString("tokenExpiredHeader"), tokenLabels.getString("tokenExpiredContent"));
+                    dialog.showAndWait();
+                });
+            }
+        }
+        return response;
+    }
+
     public HttpResponse<String> removeProduct(int stockId, int productId) throws IOException, InterruptedException, URISyntaxException {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(new URI(baseUrl + "/user/stocks/" + stockId + "/produits/" + productId))
+                .header("Authorization", "Bearer " + token)
+                .header("Accept-Language", locale)
+                .DELETE()
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        if (response.statusCode() != 201 && response.statusCode() != 200 && response.statusCode() != 409 && response.statusCode() != 204) {
+            System.out.println(response.body());
+            loadResourceBundle();
+
+            if (response.statusCode() == 500) {
+                Platform.runLater(() -> {
+                    ErrorDialog dialog = new ErrorDialog(tokenLabels.getString("error"), tokenLabels.getString("server_error"), tokenLabels.getString("server_unavailable"), FontAwesomeSolid.EXCLAMATION_TRIANGLE);
+                    dialog.showAndWait();
+                });
+            }
+
+            if (response.statusCode() == 401) {
+                TokenManager.removeToken();
+                Platform.runLater(() -> {
+                    TokenExpiredDialog dialog = new TokenExpiredDialog(tokenLabels.getString("tokenExpiredTitle"), tokenLabels.getString("tokenExpiredHeader"), tokenLabels.getString("tokenExpiredContent"));
+                    dialog.showAndWait();
+                });
+            }
+        }
+        return response;
+    }
+
+    public HttpResponse<String> removeProductFromGroup(int stockId, int groupeId,int productId) throws IOException, InterruptedException, URISyntaxException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(new URI(baseUrl + "/groups/" + groupeId + "/stocks/" + stockId + "/produits/" + productId))
                 .header("Authorization", "Bearer " + token)
                 .header("Accept-Language", locale)
                 .DELETE()
@@ -394,6 +455,7 @@ public class HttpManager {
         return response;
     }
 
+
     public HttpResponse<String> getUserStocks() throws URISyntaxException, IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(new URI(baseUrl + "/user/stocks"))
@@ -500,6 +562,40 @@ public class HttpManager {
                 .timeout(Duration.of(5, SECONDS))
                 .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        System.out.println(response.body());
+        if (response.statusCode() != 201 && response.statusCode() != 200 && response.statusCode() != 409) {
+            loadResourceBundle();
+
+            if (response.statusCode() == 500) {
+                Platform.runLater(() -> {
+                    ErrorDialog dialog = new ErrorDialog(tokenLabels.getString("error"), tokenLabels.getString("server_error"), tokenLabels.getString("server_unavailable"), FontAwesomeSolid.EXCLAMATION_TRIANGLE);
+                    dialog.showAndWait();
+                });
+            }
+
+            if (response.statusCode() == 401) {
+                TokenManager.removeToken();
+                Platform.runLater(() -> {
+                    TokenExpiredDialog dialog = new TokenExpiredDialog(tokenLabels.getString("tokenExpiredTitle"), tokenLabels.getString("tokenExpiredHeader"), tokenLabels.getString("tokenExpiredContent"));
+                    dialog.showAndWait();
+                });
+            }
+
+        }
+        return response;
+    }
+
+    public HttpResponse<String> deleteGroupStock(int stockId, int groupId) throws IOException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(baseUrl + "/groups/" + groupId + "/stocks/" + stockId))
+                .header("Authorization", "Bearer " + token)
+                .header("Content-Type", "application/json")
+                .header("Accept-Language", locale)
+                .DELETE()
+                .timeout(Duration.of(5, SECONDS))
+                .build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        System.out.println(response.body());
         if (response.statusCode() != 201 && response.statusCode() != 200 && response.statusCode() != 409) {
             loadResourceBundle();
 

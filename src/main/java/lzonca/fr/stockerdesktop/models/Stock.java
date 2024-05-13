@@ -6,6 +6,7 @@ public class Stock {
     private int id;
     private String nom;
     private int proprietaire_id;
+    private int groupe_id;
     private List<Produit> produits;
 
     // getters and setters
@@ -23,6 +24,14 @@ public class Stock {
 
     public void setNom(String nom) {
         this.nom = nom;
+    }
+
+    public int getGroupe_id() {
+        return groupe_id;
+    }
+
+    public void setGroupe_id(int groupe_id) {
+        this.groupe_id = groupe_id;
     }
 
     public int getProprietaire_id() {

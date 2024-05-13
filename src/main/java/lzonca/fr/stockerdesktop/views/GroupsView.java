@@ -68,7 +68,8 @@ public class GroupsView {
     @FXML
     private Button refreshButton;
 
-
+    // Declare 'stockPanes' at the class level in GroupsView.java
+    private final Map<Stock, TitledPane> stockPanes = new HashMap<>();
     @FXML
     private Label buttonLabel;
     private ResourceBundle labels;
@@ -295,12 +296,37 @@ public class GroupsView {
         // Create a TitledPane with a TableView for the members
         TitledPane membersPane = new TitledPane();
         membersPane.setText(labels.getString("groupMembers"));
+        VBox membersBox = new VBox();
+
+        HBox adduserHBox = new HBox();
+
+        Button adduserButton = new Button(labels.getString("addUser"));
+        TextField emailField = new TextField();
+        emailField.setPromptText(labels.getString("enterEmail"));
+        adduserButton.getStyleClass().add("default-button");
+        adduserButton.setOnAction(_ -> {
+            String emailRegex = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@"
+                    + "[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
+            if (emailField.getText().isEmpty() || !emailField.getText().matches(emailRegex)) {
+                new ErrorDialog(labels.getString("error"), labels.getString("errorTitleInvalidEmail"), labels.getString("errorDescInvalidEmail"), FontAwesomeSolid.EXCLAMATION_CIRCLE).showAndWait();
+            } else {
+                try {
+                    httpManager.addUserToGroup(groupe.getId(), emailField.getText());
+                    new ErrorDialog(labels.getString("success"), labels.getString("addUserSuccessTitle"), labels.getString("addUserSuccessMessage"), FontAwesomeSolid.CHECK_CIRCLE).showAndWait();
+                } catch (IOException | InterruptedException | URISyntaxException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
+        adduserHBox.getChildren().addAll(emailField, adduserButton);
+
 
         // Create a TableView to hold the group members
         TableView<User> membersTable = createMemberTable(groupe);
-
+        membersBox.getChildren().addAll(adduserHBox, membersTable);
         // Set the content of the membersPane to the membersTable TableView
-        membersPane.setContent(membersTable);
+        membersPane.setContent(membersBox);
 
         // Add the membersPane to the membersAccordion
         membersAccordion.getPanes().add(membersPane);
@@ -361,11 +387,38 @@ public class GroupsView {
             });
 
             // Create a TableView for the stock
-            TableView<Produit> table = createProductTable(stock);
+            TableView<Produit> table = createProductTable(stock, groupe);
+
+            Button deleteButton = new Button();
+            deleteButton.getStyleClass().add("default-button");
+            deleteButton.setGraphic(new FontIcon("fas-trash"));
+            deleteButton.setOnAction(_ -> {
+                // Create a confirmation dialog
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle(labels.getString("confirmDeleteTitle"));
+                alert.setHeaderText(labels.getString("confirmDeleteStock"));
+                alert.setContentText(labels.getString("confirmDeleteContent"));
+
+                // Show the dialog and wait for the user's response
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.isPresent() && result.get() == ButtonType.OK) {
+                    HttpManager httpManager = new HttpManager();
+                    try {
+                        httpManager.deleteGroupStock(stock.getId(), groupe.getId());
+                        // Remove the TitledPane associated with the Stock
+                        stockAccordion.getPanes().remove(stockPanes.get(stock));
+                    } catch (IOException | InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            });
 
             stockPaneContent.getChildren().addAll(newProductButton, table);
             stockPane.setContent(stockPaneContent);
-
+            table.setStyle("-fx-padding: 10;" // Add padding
+                    + "-fx-font-size: 14;" // Increase font size
+                    + "-fx-text-fill: #333333;"); // Change font color
+            stockPane.setGraphic(deleteButton);
             stockAccordion.getPanes().add(stockPane);
         }
         stocksBox.getChildren().add(stockAccordion);
@@ -413,7 +466,7 @@ public class GroupsView {
 
     private TableView<User> createMemberTable(Groupe groupe){
         TableView<User> membersTable = new TableView<>();
-
+        membersTable.setPrefHeight(400); // Set the height as per your requirement
         // Create the name column
         TableColumn<User, String> nameColumn = new TableColumn<>();
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name")); // use the exact field name
@@ -492,7 +545,6 @@ public class GroupsView {
                 // Pass the stock to the controller
                 CreateProduitForm controller = loader.getController();
                 controller.setStock(stock);
-                controller.setFromGroupsView(true); // set the flag
                 controller.setGroupsView(this, groupe); // pass the reference of GroupsView
 
                 // Create a new Scene with the loaded FXML file
@@ -508,7 +560,7 @@ public class GroupsView {
             }
         });
         // Create a TableView for the stock
-        TableView<Produit> table = createProductTable(stock);
+        TableView<Produit> table = createProductTable(stock, groupe);
 
         // Set the content of the stockPane to the TableView
         stockPaneContent.getChildren().addAll(newProductButton, table);
@@ -517,12 +569,12 @@ public class GroupsView {
         return stockPane;
     }
 
-    private TableView<Produit> createProductTable(Stock stock) {
+    private TableView<Produit> createProductTable(Stock stock, Groupe groupe) {
 
         System.out.println("Création table des produits pour le stock: " + stock.getNom());
 
         TableView<Produit> table = new TableView<>();
-
+        table.setPrefHeight(500);
         // Define columns
         TableColumn<Produit, String> codeColumn = new TableColumn<>(labels.getString("productCode"));
         codeColumn.setCellValueFactory(new PropertyValueFactory<>("code"));
@@ -613,7 +665,7 @@ public class GroupsView {
                             String quantityText = quantityInput.getText().isEmpty() ? quantityInput.getPromptText() : quantityInput.getText();
                             quantity = Integer.parseInt(quantityText);
                             HttpManager httpManager = new HttpManager();
-                            httpManager.updateProductQuantity(stock.getId(), produit.getId(), quantity);
+                            httpManager.updateGroupProductQuantity(stock.getId(), groupe.getId(), produit.getId(), quantity);
                             new ErrorDialog(labels.getString("success"), labels.getString("successTitleQuantiteUpdated"), labels.getString("successDescQuantiteUpdated"), FontAwesomeSolid.EXCLAMATION_CIRCLE).showAndWait();
                         } catch (NumberFormatException e) {
                             // Show an error message if the entered quantity is not a valid number
@@ -724,7 +776,7 @@ public class GroupsView {
                             // Call your API to remove the product
                             HttpManager httpManager = new HttpManager();
                             try {
-                                httpManager.removeProduct(stock.getId(), produit.getId());
+                                httpManager.removeProductFromGroup(stock.getId(), groupe.getId(), produit.getId());
                             } catch (IOException | InterruptedException | URISyntaxException e) {
                                 throw new RuntimeException(e);
                             }
@@ -741,6 +793,7 @@ public class GroupsView {
                 setGraphic(buttons);
             }
         });
+
         codeColumn.prefWidthProperty().bind(table.widthProperty().divide(4));
         nameColumn.prefWidthProperty().bind(table.widthProperty().divide(4));
         quantityChangeColumn.prefWidthProperty().bind(table.widthProperty().divide(4));
@@ -775,10 +828,8 @@ public class GroupsView {
             // Create a new Scene with the loaded FXML file
             Scene scene = new Scene(root);
 
-            CreateStockForm controller = loader.getController();
+            CreateGroupStockForm controller = loader.getController();
             controller.setGroupsView(this, groupe); // existing line
-            controller.setStocksView(null); // add this line
-            controller.setFromGroupsView(true); // set the flag
 
             Stage stage = new Stage();
             stage.setScene(scene);

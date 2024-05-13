@@ -71,7 +71,6 @@ public class StocksView {
 
             CreateStockForm createStockForm = new CreateStockForm();
             createStockForm.setStocksView(this); // assuming 'this' is an instance of StocksView
-            createStockForm.setFromGroupsView(false); // set the flag
 
             Stage stage = new Stage();
             stage.setScene(scene);
