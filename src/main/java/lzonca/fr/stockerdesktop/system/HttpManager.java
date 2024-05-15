@@ -206,9 +206,10 @@ public class HttpManager {
         }
         return response;
     }
+
     public HttpResponse<String> updateGroupeProduit(int stockId, int groupeId, int productId, String productName, String productCode, String productDesc) throws IOException, InterruptedException, URISyntaxException {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(new URI(baseUrl + "/groups/"+ groupeId +"/stocks/" + stockId + "/produits/" + productId))
+                .uri(new URI(baseUrl + "/groups/" + groupeId + "/stocks/" + stockId + "/produits/" + productId))
                 .header("Authorization", "Bearer " + token)
                 .header("Content-Type", "application/json")
                 .header("Accept-Language", locale)
@@ -330,7 +331,7 @@ public class HttpManager {
         return response;
     }
 
-    public HttpResponse<String> removeProductFromGroup(int stockId, int groupeId,int productId) throws IOException, InterruptedException, URISyntaxException {
+    public HttpResponse<String> removeProductFromGroup(int stockId, int groupeId, int productId) throws IOException, InterruptedException, URISyntaxException {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(new URI(baseUrl + "/groups/" + groupeId + "/stocks/" + stockId + "/produits/" + productId))
                 .header("Authorization", "Bearer " + token)
@@ -412,8 +413,7 @@ public class HttpManager {
     }
 
 
-
-    public HttpResponse<String> createGroupProduit(int stockId, int groupId , String productName, String productCode, String productDesc) throws IOException, InterruptedException, URISyntaxException {
+    public HttpResponse<String> createGroupProduit(int stockId, int groupId, String productName, String productCode, String productDesc) throws IOException, InterruptedException, URISyntaxException {
 
         // Add JSON data
         String jsonData = "{\"nom\":\"" + productName + "\"";
@@ -427,7 +427,7 @@ public class HttpManager {
         System.out.println(jsonData);
 
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(new URI(baseUrl + "/groups/" + groupId +"/stocks/" + stockId + "/produits"))
+                .uri(new URI(baseUrl + "/groups/" + groupId + "/stocks/" + stockId + "/produits"))
                 .header("Authorization", "Bearer " + token)
                 .header("Content-Type", "application/json")
                 .header("Accept-Language", locale)

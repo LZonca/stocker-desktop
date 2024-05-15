@@ -82,7 +82,7 @@ public class CreateProduitForm {
             try {
                 if (isFromGroupsView) {
                     // Call createGroupProduit method if the form is opened from GroupsView
-                    httpManager.createGroupProduit(stock.getId(), groupe.getId(),productNameInput.getText(), productCodeInput.getText(), productDesc.getText());
+                    httpManager.createGroupProduit(stock.getId(), groupe.getId(), productNameInput.getText(), productCodeInput.getText(), productDesc.getText());
                     Platform.runLater(() -> {
                         groupsView.refreshStocks();
                         groupsView.refreshGroups(); // Add this line to refresh the groups
@@ -93,7 +93,6 @@ public class CreateProduitForm {
                     // Refresh the stock
                     Platform.runLater(() -> stocksView.refreshStock(stock));
                 }
-
 
 
                 new ErrorDialog(labels.getString("success"), labels.getString("successTitleProductCreated"), labels.getString("successDescProductCreated"), FontAwesomeSolid.CHECK_CIRCLE).showAndWait();
@@ -108,9 +107,11 @@ public class CreateProduitForm {
         loadResourceBundle();
         updateText(labels);
     }
+
     public void setFromGroupsView(boolean isFromGroupsView) {
         this.isFromGroupsView = isFromGroupsView;
     }
+
     public void setGroupsView(GroupsView groupsView, Groupe groupe) {
         this.groupsView = groupsView;
         this.groupe = groupe;

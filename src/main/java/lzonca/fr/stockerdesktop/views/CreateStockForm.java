@@ -30,17 +30,15 @@ public class CreateStockForm {
     private StocksView stocksView;
 
 
-
-
     @FXML
     private void initialize() {
         createStockButton.setOnAction(_ -> {
             HttpManager httpManager = new HttpManager();
             try {
-                    httpManager.createUserStock(nameField.getText());
-                   if (stocksView != null){
-                       Platform.runLater(() -> stocksView.refreshStocks());
-                   }
+                httpManager.createUserStock(nameField.getText());
+                if (stocksView != null) {
+                    Platform.runLater(() -> stocksView.refreshStocks());
+                }
 
                 // Refresh the stocks
                 new ErrorDialog(labels.getString("success"), labels.getString("successTitleStockCreated"), labels.getString("successDescStockCreated"), FontAwesomeSolid.CHECK_CIRCLE).showAndWait();

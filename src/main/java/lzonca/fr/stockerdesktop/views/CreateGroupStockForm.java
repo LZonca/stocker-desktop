@@ -38,12 +38,12 @@ public class CreateGroupStockForm {
         createStockButton.setOnAction(_ -> {
             HttpManager httpManager = new HttpManager();
             try {
-                    // Call createGroupProduit method if the form is opened from GroupsView
-                    httpManager.createGroupStock(nameField.getText(), groupe.getId());
-                    Platform.runLater(() -> {
-                        groupsView.refreshStocks();
-                        groupsView.refreshGroups(); // Add this line to refresh the groups
-                    });
+                // Call createGroupProduit method if the form is opened from GroupsView
+                httpManager.createGroupStock(nameField.getText(), groupe.getId());
+                Platform.runLater(() -> {
+                    groupsView.refreshStocks();
+                    groupsView.refreshGroups(); // Add this line to refresh the groups
+                });
 
                 // Refresh the stocks
                 new ErrorDialog(labels.getString("success"), labels.getString("successTitleStockCreated"), labels.getString("successDescStockCreated"), FontAwesomeSolid.CHECK_CIRCLE).showAndWait();

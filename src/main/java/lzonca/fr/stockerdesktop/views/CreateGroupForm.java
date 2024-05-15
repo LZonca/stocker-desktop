@@ -30,7 +30,6 @@ public class CreateGroupForm {
     private GroupsView groupsView;
 
 
-
     @FXML
     private void initialize() {
         createGroupButton.setOnAction(_ -> {
