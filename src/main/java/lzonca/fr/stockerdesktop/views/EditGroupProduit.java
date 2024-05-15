@@ -1,6 +1,5 @@
 package lzonca.fr.stockerdesktop.views;
 
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -52,12 +51,11 @@ public class EditGroupProduit {
     private GroupsView groupsView;
 
 
-
     @FXML
     public void initialize() {
         loadResourceBundle();
         updateTexts();
-        if (produit != null){
+        if (produit != null) {
             loadProduit();
         }
 
@@ -65,7 +63,7 @@ public class EditGroupProduit {
             if (productName != null && !productName.getText().isEmpty()) {
                 HttpManager httpManager = new HttpManager();
                 try {
-                    httpManager.updateGroupeProduit(stock.getId(), groupe.getId() ,produit.getId(), productName.getText(), productCode.getText(), productDesc.getText());
+                    httpManager.updateGroupeProduit(stock.getId(), groupe.getId(), produit.getId(), productName.getText(), productCode.getText(), productDesc.getText());
                     Stage stage = (Stage) confirmBtn.getScene().getWindow();
                     stage.close();
 
@@ -112,7 +110,7 @@ public class EditGroupProduit {
 
                 productCode.setText(labels.getString("noCode"));
 
-            }else {
+            } else {
 
                 productCode.setText(produit.getCode());
 
@@ -122,7 +120,7 @@ public class EditGroupProduit {
 
                 productDesc.setText(labels.getString("noDesc"));
 
-            }else {
+            } else {
 
                 productDesc.setText(produit.getDescription());
 

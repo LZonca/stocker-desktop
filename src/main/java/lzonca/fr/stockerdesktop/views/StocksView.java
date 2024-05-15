@@ -369,7 +369,7 @@ public class StocksView {
 
         // Add the table and the "Create Product" button to a VBox
         // Add the table and the "Create Product" button to a VBox
-        VBox vbox = new VBox(createProduitBtn,refreshStockBtn, table);
+        VBox vbox = new VBox(createProduitBtn, refreshStockBtn, table);
         vbox.setFillWidth(true);
         vbox.setAlignment(Pos.CENTER); // Center the children
 

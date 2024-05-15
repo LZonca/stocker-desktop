@@ -181,7 +181,6 @@ public class SettingsView {
     }
 
 
-
     public boolean isPasswordValid(String password) {
         // At least 12 characters, including uppercase, lowercase, numbers, and special characters
         String passwordRegex = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{12,}$";

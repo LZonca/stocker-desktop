@@ -12,7 +12,6 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import lzonca.fr.stockerdesktop.App;
 import lzonca.fr.stockerdesktop.components.ErrorDialog;
-import lzonca.fr.stockerdesktop.models.User;
 import lzonca.fr.stockerdesktop.responses.UserResponse;
 import lzonca.fr.stockerdesktop.system.HttpManager;
 import lzonca.fr.stockerdesktop.system.LanguageManager;
@@ -26,7 +25,6 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.Objects;
 import java.util.ResourceBundle;
-import java.util.prefs.Preferences;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

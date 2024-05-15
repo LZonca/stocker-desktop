@@ -1,46 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
-
-<AnchorPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="lzonca.fr.stockerdesktop.views.ShowProduit">
-    <VBox alignment="TOP_CENTER"  prefHeight="636.0" prefWidth="463.0" spacing="20.0" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+<AnchorPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="lzonca.fr.stockerdesktop.views.ShowProduit">
+    <VBox alignment="TOP_CENTER" prefHeight="636.0" prefWidth="463.0" spacing="20.0" AnchorPane.bottomAnchor="0"
+          AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <padding>
-            <Insets top="30.0" />
+            <Insets top="30.0"/>
         </padding>
         <Label fx:id="productNameLabel" alignment="CENTER" text="Nom du produit">
             <font>
-                <Font size="24.0" />
+                <Font size="24.0"/>
             </font>
         </Label>
-        <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+        <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true"/>
         <VBox alignment="CENTER">
-            <Label fx:id="productCodeLabel" text="Code:" />
+            <Label fx:id="productCodeLabel" text="Code:"/>
             <Label fx:id="productCode" alignment="CENTER" prefHeight="33.0" prefWidth="151.0" text="Code du produit">
                 <font>
-                    <Font size="18.0" />
+                    <Font size="18.0"/>
                 </font>
             </Label>
         </VBox>
         <VBox alignment="CENTER">
-            <Label fx:id="productQuantityLabel" text="Quantité:" />
+            <Label fx:id="productQuantityLabel" text="Quantité:"/>
             <Label fx:id="productQuantity" text="Quantié du produit">
                 <font>
-                    <Font size="18.0" />
+                    <Font size="18.0"/>
                 </font>
             </Label>
         </VBox>
         <VBox alignment="TOP_CENTER" prefHeight="225.0" prefWidth="463.0" spacing="10.0">
-            <Label fx:id="productDescLabel" text="Description" />
-         <TextArea fx:id="productDesc" editable="false" prefHeight="195.0" prefWidth="304.0" wrapText="true" />
-         <padding>
-            <Insets left="50.0" right="50.0" />
-         </padding>
+            <Label fx:id="productDescLabel" text="Description"/>
+            <TextArea fx:id="productDesc" editable="false" prefHeight="195.0" prefWidth="304.0" wrapText="true"/>
+            <padding>
+                <Insets left="50.0" right="50.0"/>
+            </padding>
         </VBox>
     </VBox>
 </AnchorPane>

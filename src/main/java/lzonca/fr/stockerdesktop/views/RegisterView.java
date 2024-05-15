@@ -3,7 +3,6 @@ package lzonca.fr.stockerdesktop.views;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -161,7 +160,6 @@ public class RegisterView {
             errorDialog.showAndWait();
             return;
         }
-
 
 
         // Replace this with your actual login logic

@@ -7,12 +7,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import lzonca.fr.stockerdesktop.components.ErrorDialog;
 import lzonca.fr.stockerdesktop.models.Produit;
 import lzonca.fr.stockerdesktop.models.Stock;
 import lzonca.fr.stockerdesktop.system.HttpManager;
 import lzonca.fr.stockerdesktop.system.LanguageManager;
-import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -51,12 +49,11 @@ public class EditProduit {
     private StocksView stocksView;
 
 
-
     @FXML
     public void initialize() {
         loadResourceBundle();
         updateTexts();
-        if (produit != null){
+        if (produit != null) {
             loadProduit();
         }
 
@@ -110,7 +107,7 @@ public class EditProduit {
 
                 productCode.setText(labels.getString("noCode"));
 
-            }else {
+            } else {
 
                 productCode.setText(produit.getCode());
 
@@ -120,7 +117,7 @@ public class EditProduit {
 
                 productDesc.setText(labels.getString("noDesc"));
 
-            }else {
+            } else {
 
                 productDesc.setText(produit.getDescription());
 

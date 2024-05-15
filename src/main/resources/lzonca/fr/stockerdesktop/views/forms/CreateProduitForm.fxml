@@ -1,68 +1,64 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextArea?>
-<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
-
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 <AnchorPane prefHeight="780.0" prefWidth="894.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="lzonca.fr.stockerdesktop.views.CreateProduitForm">
-   <VBox alignment="TOP_CENTER" layoutX="-1.0" layoutY="-4.0" prefHeight="764.0" prefWidth="894.0" spacing="20.0"
-         AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
-         AnchorPane.topAnchor="0.0">
-      <padding>
-         <Insets top="30.0"/>
-      </padding>
-      <Label fx:id="titleLabel" alignment="CENTER" contentDisplay="CENTER" text="Ajouter un nouveau produit" textAlignment="CENTER">
-         <font>
-            <Font size="25.0"/>
-         </font>
-      </Label>
-      <VBox alignment="TOP_CENTER" prefHeight="667.0" prefWidth="894.0" spacing="20.0">
-         <padding>
-            <Insets left="250.0" right="250.0" top="20.0"/>
-         </padding>
-         <Label fx:id="productNameLabel" alignment="CENTER" text="Nom du produit * :">
+    <VBox alignment="TOP_CENTER" layoutX="-1.0" layoutY="-4.0" prefHeight="764.0" prefWidth="894.0" spacing="20.0"
+          AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+          AnchorPane.topAnchor="0.0">
+        <padding>
+            <Insets top="30.0"/>
+        </padding>
+        <Label fx:id="titleLabel" alignment="CENTER" contentDisplay="CENTER" text="Ajouter un nouveau produit"
+               textAlignment="CENTER">
             <font>
-               <Font size="15.0"/>
+                <Font size="25.0"/>
             </font>
-         </Label>
-         <TextField fx:id="productNameInput" prefHeight="25.0" prefWidth="514.0"/>
-         <Label fx:id="productCodeLabel" alignment="CENTER" text="Code du produit :">
-            <font>
-               <Font size="15.0"/>
-            </font>
-         </Label>
-         <TextField fx:id="productCodeInput"/>
-         <Label fx:id="productDescLabel" alignment="CENTER" text="Description :">
-            <font>
-               <Font size="15.0"/>
-            </font>
-         </Label>
-         <TextArea fx:id="productDesc" prefHeight="178.0" prefWidth="389.0"/>
-         <ImageView fx:id="imagePreview" accessibleText="Your image" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true"
-                    preserveRatio="true"/>
-         <HBox alignment="CENTER_LEFT" prefHeight="27.0" prefWidth="291.0" spacing="5.0">
-            <TextField fx:id="uploadTextField" editable="false" prefHeight="31.0" prefWidth="245.0"/>
-            <Button fx:id="uploadButton" prefHeight="31.0" prefWidth="143.0" styleClass="default-button"
-                    stylesheets="@../../css/styles.css" text="Upload image">
-               <font>
-                  <Font size="15.0"/>
-               </font>
+        </Label>
+        <VBox alignment="TOP_CENTER" prefHeight="667.0" prefWidth="894.0" spacing="20.0">
+            <padding>
+                <Insets left="250.0" right="250.0" top="20.0"/>
+            </padding>
+            <Label fx:id="productNameLabel" alignment="CENTER" text="Nom du produit * :">
+                <font>
+                    <Font size="15.0"/>
+                </font>
+            </Label>
+            <TextField fx:id="productNameInput" prefHeight="25.0" prefWidth="514.0"/>
+            <Label fx:id="productCodeLabel" alignment="CENTER" text="Code du produit :">
+                <font>
+                    <Font size="15.0"/>
+                </font>
+            </Label>
+            <TextField fx:id="productCodeInput"/>
+            <Label fx:id="productDescLabel" alignment="CENTER" text="Description :">
+                <font>
+                    <Font size="15.0"/>
+                </font>
+            </Label>
+            <TextArea fx:id="productDesc" prefHeight="178.0" prefWidth="389.0"/>
+            <ImageView fx:id="imagePreview" accessibleText="Your image" fitHeight="150.0" fitWidth="200.0"
+                       pickOnBounds="true"
+                       preserveRatio="true"/>
+            <HBox alignment="CENTER_LEFT" prefHeight="27.0" prefWidth="291.0" spacing="5.0">
+                <TextField fx:id="uploadTextField" editable="false" prefHeight="31.0" prefWidth="245.0"/>
+                <Button fx:id="uploadButton" prefHeight="31.0" prefWidth="143.0" styleClass="default-button"
+                        stylesheets="@../../css/styles.css" text="Upload image">
+                    <font>
+                        <Font size="15.0"/>
+                    </font>
+                </Button>
+            </HBox>
+            <Button fx:id="validateButton" mnemonicParsing="false" prefHeight="57.0" prefWidth="545.0"
+                    styleClass="main-button" stylesheets="@../../css/styles.css" text="Valider">
+                <font>
+                    <Font size="21.0"/>
+                </font>
             </Button>
-         </HBox>
-         <Button fx:id="validateButton" mnemonicParsing="false" prefHeight="57.0" prefWidth="545.0"
-                 styleClass="main-button" stylesheets="@../../css/styles.css" text="Valider">
-            <font>
-               <Font size="21.0"/>
-            </font>
-         </Button>
-      </VBox>
-   </VBox>
+        </VBox>
+    </VBox>
 </AnchorPane>

@@ -45,7 +45,7 @@ public class ShowProduit {
     public void initialize() {
         loadResourceBundle();
         updateTexts();
-        if (produit != null){
+        if (produit != null) {
             loadProduit();
         }
     }
@@ -80,13 +80,13 @@ public class ShowProduit {
 
             if (produit.getCode() == null) {
                 productCode.setText(labels.getString("noCode"));
-            }else {
+            } else {
                 productCode.setText(produit.getCode());
             }
 
             if (produit.getDescription() == null) {
                 productDesc.setText(labels.getString("noDesc"));
-            }else {
+            } else {
                 productDesc.setText(produit.getDescription());
             }
             productQuantity.setText(String.valueOf(produit.getPivot().getQuantite()));

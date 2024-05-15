@@ -30,7 +30,7 @@
         <Button fx:id="createStockBtn" mnemonicParsing="false" prefHeight="34.0" prefWidth="216.0"
                 styleClass="main-button" stylesheets="@../css/styles.css" text="Create new stock"/>
         <ScrollPane fitToWidth="true" fitToHeight="true">
-            <VBox alignment="CENTER" > <!-- Add padding here -->
+            <VBox alignment="CENTER"> <!-- Add padding here -->
                 <padding>
                     <Insets bottom="20"/>
                 </padding>

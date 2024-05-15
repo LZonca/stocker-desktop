@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyObjectWrapper;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -146,11 +145,10 @@ public class GroupsView {
                 TitledPane groupPane = createGroupAccordion(groupe);
                 groupsAccordion.getPanes().add(groupPane);
             }
-        }else{
+        } else {
             System.out.println("Aucun groupe à afficher");
         }
     }
-
 
 
     public void refreshGroupStocks(Groupe groupe) {
@@ -340,7 +338,6 @@ public class GroupsView {
     private Accordion createStocksAccordion(Groupe groupe) {
 
 
-
         // Create a TitledPane for each stock
         Accordion stocksAccordion = new Accordion();
         TitledPane stocksPane = new TitledPane();
@@ -459,10 +456,8 @@ public class GroupsView {
         groupVbox.getChildren().add(ownerNameLabel);
 
 
-
         // Add the membersAccordion to the groupVbox
         groupVbox.getChildren().add(createMembersAccordion(groupe));
-
 
 
         // Add the Accordion to the group's TitledPane
@@ -474,8 +469,7 @@ public class GroupsView {
     }
 
 
-
-    private TableView<User> createMemberTable(Groupe groupe){
+    private TableView<User> createMemberTable(Groupe groupe) {
         TableView<User> membersTable = new TableView<>();
         membersTable.setPrefHeight(400); // Set the height as per your requirement
         // Create the name column
@@ -932,6 +926,7 @@ public class GroupsView {
             removeButtonColumn.setSortable(false); // Add this line
             removeButtonColumn.setCellFactory(_ -> new TableCell<>() {
                 private final Button removeButton = new Button(labels.getString("removeUser"));
+
                 {
                     removeButton.getStyleClass().add("default-button");
                     FontIcon trashIcon = new FontIcon("fas-user-slash");
