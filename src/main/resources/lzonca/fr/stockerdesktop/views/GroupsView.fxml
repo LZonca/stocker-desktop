@@ -6,6 +6,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ProgressIndicator?>
 <?import javafx.scene.control.ScrollBar?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TitledPane?>
@@ -33,47 +34,48 @@
             </font>
         </Label>
         <Button fx:id="createGroupBtn" mnemonicParsing="false" styleClass="default-button" text="New group" />
-        <AnchorPane prefHeight="462.0" prefWidth="828.0">
-            <Accordion fx:id="groupsAccordion" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                <panes>
-                    <TitledPane fx:id="groupsPane" text="Groupe">
-                        <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0">
-                            <padding>
-                                <Insets left="100.0" right="100.0" top="20.0" />
-                            </padding>
-                            <Label fx:id="groupNameLabel" alignment="CENTER" contentDisplay="CENTER" prefHeight="23.0" prefWidth="277.0" text="Nom du groupe">
-                                <font>
-                                    <Font size="25.0" />
-                                </font>
-                            </Label>
-                            <Accordion>
-                                <panes>
-                                    <TitledPane fx:id="membersPane" text="Membres du groupe">
-                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                                            <TableView layoutY="3.0" prefHeight="174.0" prefWidth="626.0">
-                                                <columns>
-                                                    <TableColumn prefWidth="313.5999954342842" resizable="false" text="Nom du membre" />
-                                                    <TableColumn minWidth="0.0" prefWidth="233.60006713867188" text="Email" />
-                                                    <TableColumn prefWidth="79.20001220703125" text="Column X" />
-                                                </columns>
-                                            </TableView>
-                                        </AnchorPane>
-                                    </TitledPane>
-                                    <TitledPane fx:id="stocksPane" animated="false" text="Stocks du groupe">
-                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                                            <ScrollBar layoutX="378.0" layoutY="14.0" orientation="VERTICAL"
-                                                       prefHeight="162.0" prefWidth="14.0"/>
-                                        </AnchorPane>
-                                    </TitledPane>
-                                </panes>
-                            </Accordion>
-                        </VBox>
-                    </TitledPane>
-
-                    <TitledPane text="Stocks du groupe" />
-                </panes>
-            </Accordion>
-        </AnchorPane>
-    </VBox> <!-- Add this line -->
-    <!-- Add your other UI elements here -->
+         <VBox alignment="CENTER">
+             <ScrollPane fx:id="groupsScrollPane" fitToHeight="true" fitToWidth="true">
+                 <AnchorPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <Accordion fx:id="groupsAccordion" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                         <panes>
+                             <TitledPane fx:id="groupsPane" text="Groupe">
+                                 <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0">
+                                     <padding>
+                                         <Insets left="100.0" right="100.0" top="20.0" />
+                                     </padding>
+                                     <Label fx:id="groupNameLabel" alignment="CENTER" contentDisplay="CENTER" prefHeight="23.0" prefWidth="277.0" text="Nom du groupe">
+                                         <font>
+                                             <Font size="25.0" />
+                                         </font>
+                                     </Label>
+                                     <Accordion>
+                                         <panes>
+                                             <TitledPane fx:id="membersPane" text="Membres du groupe">
+                                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                                     <TableView layoutY="3.0" prefHeight="174.0" prefWidth="626.0">
+                                                         <columns>
+                                                             <TableColumn prefWidth="313.5999954342842" resizable="false" text="Nom du membre" />
+                                                             <TableColumn minWidth="0.0" prefWidth="233.60006713867188" text="Email" />
+                                                             <TableColumn prefWidth="79.20001220703125" text="Column X" />
+                                                         </columns>
+                                                     </TableView>
+                                                 </AnchorPane>
+                                             </TitledPane>
+                                             <TitledPane fx:id="stocksPane" animated="false" text="Stocks du groupe">
+                                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                                     <ScrollBar layoutX="378.0" layoutY="14.0" orientation="VERTICAL" prefHeight="162.0" prefWidth="14.0" />
+                                                 </AnchorPane>
+                                             </TitledPane>
+                                         </panes>
+                                     </Accordion>
+                                 </VBox>
+                             </TitledPane>
+                             <TitledPane text="Stocks du groupe" />
+                         </panes>
+                     </Accordion>
+                 </AnchorPane>
+             </ScrollPane>
+         </VBox>
+    </VBox>
 </AnchorPane>

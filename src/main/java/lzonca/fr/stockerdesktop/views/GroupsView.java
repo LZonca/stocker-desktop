@@ -68,6 +68,9 @@ public class GroupsView {
     @FXML
     private Button refreshButton;
 
+    @FXML
+    private ScrollPane groupsScrollPane;
+
     // Declare 'stockPanes' at the class level in GroupsView.java
     private final Map<Stock, TitledPane> stockPanes = new HashMap<>();
     @FXML
@@ -853,6 +856,7 @@ public class GroupsView {
 
     private void displayGroupStocks() {
         // Iterate over each TitledPane in the groupsAccordion
+
         for (TitledPane groupPane : groupsAccordion.getPanes()) {
             // Find the corresponding group
             Groupe groupe = user.getGroupes().stream()
@@ -880,6 +884,7 @@ public class GroupsView {
                 }
             }
         }
+
     }
 
     public void refreshStocks() {

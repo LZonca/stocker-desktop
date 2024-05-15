@@ -661,7 +661,7 @@ public class HttpManager {
 
         System.out.println("Status code: " + response.statusCode());
         System.out.println("Headers: " + response.headers());
-
+        loadResourceBundle();
         if (response.statusCode() == 500) {
             Platform.runLater(() -> {
                 ErrorDialog dialog = new ErrorDialog(tokenLabels.getString("error"), tokenLabels.getString("server_error"), tokenLabels.getString("server_unavailable"), FontAwesomeSolid.EXCLAMATION_TRIANGLE);
@@ -741,6 +741,107 @@ public class HttpManager {
         return response;
     }
 
+    public HttpResponse<String> updateEmail(String email) throws IOException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(baseUrl + "/user"))
+                .header("Authorization", "Bearer " + token)
+                .header("Content-Type", "application/json")
+                .header("Accept-Language", locale)
+                .method("PATCH", HttpRequest.BodyPublishers.ofString("{\"email\":\"" + email + "\"}"))
+                .timeout(Duration.of(5, SECONDS))
+                .build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        System.out.println(response.body());
+        if (response.statusCode() != 201 && response.statusCode() != 200) {
+            loadResourceBundle();
+
+            if (response.statusCode() == 500) {
+                Platform.runLater(() -> {
+                    ErrorDialog dialog = new ErrorDialog(tokenLabels.getString("error"), tokenLabels.getString("server_error"), tokenLabels.getString("server_unavailable"), FontAwesomeSolid.EXCLAMATION_TRIANGLE);
+                    dialog.showAndWait();
+                });
+            }
+
+            if (response.statusCode() == 401) {
+                TokenManager.removeToken();
+                Platform.runLater(() -> {
+                    TokenExpiredDialog dialog = new TokenExpiredDialog(tokenLabels.getString("tokenExpiredTitle"), tokenLabels.getString("tokenExpiredHeader"), tokenLabels.getString("tokenExpiredContent"));
+                    dialog.showAndWait();
+                });
+            }
+        }
+        return response;
+    }
+
+    public HttpResponse<String> updateName(String name) throws IOException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(baseUrl + "/user"))
+                .header("Authorization", "Bearer " + token)
+                .header("Content-Type", "application/json")
+                .header("Accept-Language", locale)
+                .method("PATCH", HttpRequest.BodyPublishers.ofString("{\"name\":\"" + name + "\"}"))
+                .timeout(Duration.of(5, SECONDS))
+                .build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        System.out.println(response.body());
+        if (response.statusCode() != 201 && response.statusCode() != 200) {
+            loadResourceBundle();
+            if (response.statusCode() == 500) {
+                Platform.runLater(() -> {
+                    ErrorDialog dialog = new ErrorDialog(tokenLabels.getString("error"), tokenLabels.getString("server_error"), tokenLabels.getString("server_unavailable"), FontAwesomeSolid.EXCLAMATION_TRIANGLE);
+                    dialog.showAndWait();
+                });
+            }
+            if (response.statusCode() == 401) {
+                TokenManager.removeToken();
+                Platform.runLater(() -> {
+                    TokenExpiredDialog dialog = new TokenExpiredDialog(tokenLabels.getString("tokenExpiredTitle"), tokenLabels.getString("tokenExpiredHeader"), tokenLabels.getString("tokenExpiredContent"));
+                    dialog.showAndWait();
+                });
+            }
+        }
+        return response;
+    }
+
+    public HttpResponse<String> updatePassword(String password) throws IOException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(baseUrl + "/user"))
+                .header("Authorization", "Bearer " + token)
+                .header("Content-Type", "application/json")
+                .header("Accept-Language", locale)
+                .method("PATCH", HttpRequest.BodyPublishers.ofString("{\"password\":\"" + password + "\"}"))
+                .timeout(Duration.of(5, SECONDS))
+                .build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() != 201 && response.statusCode() != 200) {
+            loadResourceBundle();
+
+            if (response.statusCode() == 409) {
+                Platform.runLater(() -> {
+                    ErrorDialog dialog = new ErrorDialog(tokenLabels.getString("error"), tokenLabels.getString("duplicateEmailTitle"), tokenLabels.getString("duplicateEmailDesc"), FontAwesomeSolid.EXCLAMATION_TRIANGLE);
+                    dialog.showAndWait();
+                });
+            }
+
+            if (response.statusCode() == 500) {
+                Platform.runLater(() -> {
+                    ErrorDialog dialog = new ErrorDialog(tokenLabels.getString("error"), tokenLabels.getString("server_error"), tokenLabels.getString("server_unavailable"), FontAwesomeSolid.EXCLAMATION_TRIANGLE);
+                    dialog.showAndWait();
+                });
+            }
+
+            if (response.statusCode() == 401) {
+                TokenManager.removeToken();
+                Platform.runLater(() -> {
+                    TokenExpiredDialog dialog = new TokenExpiredDialog(tokenLabels.getString("tokenExpiredTitle"), tokenLabels.getString("tokenExpiredHeader"), tokenLabels.getString("tokenExpiredContent"));
+                    dialog.showAndWait();
+                });
+            }
+        }
+        return response;
+    }
+
     public HttpResponse<String> post(String url, String json) throws URISyntaxException {
 
         HttpRequest request = HttpRequest.newBuilder()
@@ -752,6 +853,7 @@ public class HttpManager {
                 .POST(HttpRequest.BodyPublishers.ofString(json))
                 .build();
         try (HttpClient client = HttpClient.newHttpClient()) {
+
             return client.send(request, HttpResponse.BodyHandlers.ofString());
         } catch (Exception e) {
             e.printStackTrace();
