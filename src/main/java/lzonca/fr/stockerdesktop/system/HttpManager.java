@@ -20,8 +20,8 @@ import java.util.ResourceBundle;
 import static java.time.temporal.ChronoUnit.SECONDS;
 
 public class HttpManager {
-    /*private final String baseUrl = "https://stocker.lzonca.fr/api";*/
-    private final String baseUrl = "http://localhost:8000/api";
+    private final String baseUrl = "https://stocker.lzonca.fr/api";
+    /*private final String baseUrl = "http://localhost:8000/api";*/
     private final String token = TokenManager.getToken();
 
     private ResourceBundle tokenLabels;
